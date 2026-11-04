@@ -197,3 +197,6 @@
 :root:is([data-window=main],[data-window=flyout]) .fui-FluentProvider [data-app-pid]>button:first-child,
 :root:is([data-window=main],[data-window=flyout]) .fui-FluentProvider [data-app-pid]>button:first-child:is(:hover,:active){background:transparent!important;background-image:none!important;box-shadow:none!important;border-color:transparent!important}
 :root:is([data-window=main],[data-window=flyout]) .fui-FluentProvider [data-app-pid]:has(>button:first-child:hover){background:transparent!important;background-image:none!important}
+
+[data-fss-caption-controls],[data-fss-caption-controls]>button{-webkit-app-region:no-drag!important;pointer-events:auto;position:relative;z-index:5}
+[data-fss-caption-controls]>button{flex:0 0 46px;box-sizing:border-box}

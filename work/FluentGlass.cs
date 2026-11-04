@@ -22,6 +22,10 @@ class FluentGlass {
  [DllImport("user32.dll")] static extern int SetWindowCompositionAttribute(IntPtr w,ref CompositionData data);
  const int SystemBackdropType=38,CornerPreference=33,BorderColor=34,BackdropNone=1,CornerRound=2,AccentBlurBehind=3,ExTransparent=0x20;
  static readonly Dictionary<IntPtr,bool> Applied=new Dictionary<IntPtr,bool>();
+ static bool NativeTitleBar(){
+  try{string path=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"com.fluentsoundswitcher.app","config.json");var settings=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Dictionary<string,object>>(File.ReadAllText(path));object style;return settings.TryGetValue("titleBarStyle",out style)&&Convert.ToString(style)=="native";}catch{return false;}
+ }
+
  static HashSet<uint> pids=new HashSet<uint>();
  static long pidsAt;
  public static bool AppRunning{get{return pids.Count>0;}}
@@ -54,6 +58,11 @@ class FluentGlass {
    long exStyle=GetWindowLongPtr(w,-20);
    bool main=t=="\u97F3\u6548\u88DD\u7F6E\u5207\u63DB\u5668"||t=="Fluent Sound Switcher";
    bool osd=!main&&(exStyle&ExTransparent)!=0;
+   if(main&&!NativeTitleBar()){
+    // Custom buttons own the caption area; leave no invisible native caption buttons above them.
+    long customStyle=style&~0x00CB0000L;
+    if(customStyle!=style){SetWindowLongPtr(w,-16,new IntPtr(customStyle));SetWindowPos(w,IntPtr.Zero,0,0,0,0,0x0037);}
+   }
    if(!main){
     var wta=new WTA_OPTIONS{dwFlags=0x0F,dwMask=0x0F};
     SetWindowThemeAttribute(w,1,ref wta,(uint)Marshal.SizeOf(wta));
