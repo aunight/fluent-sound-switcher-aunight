@@ -60,6 +60,11 @@ class FluentGlass {
   pids=found;pidsAt=Environment.TickCount;
  }
  [DllImport("user32.dll")] static extern bool ShowWindowAsync(IntPtr window,int command);
+ [DllImport("user32.dll")] static extern bool IsIconic(IntPtr window);
+ [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr window);
+ public static void ShowMain(){
+  RefreshPids();EnumWindows(delegate(IntPtr window,IntPtr unused){uint pid;GetWindowThreadProcessId(window,out pid);if(!pids.Contains(pid))return true;var text=new StringBuilder(256);GetWindowText(window,text,text.Capacity);string title=text.ToString();if(title=="音效裝置切換器"||title=="Fluent Sound Switcher"){ShowWindowAsync(window,IsIconic(window)?9:5);SetWindowPos(window,IntPtr.Zero,0,0,0,0,0x0003);SetForegroundWindow(window);}return true;},IntPtr.Zero);
+ }
  public static void HideMain(){
   RefreshPids();EnumWindows(delegate(IntPtr window,IntPtr unused){uint pid;GetWindowThreadProcessId(window,out pid);if(!pids.Contains(pid))return true;var text=new StringBuilder(256);GetWindowText(window,text,text.Capacity);string title=text.ToString();if(title=="音效裝置切換器"||title=="Fluent Sound Switcher")ShowWindowAsync(window,0);return true;},IntPtr.Zero);
  }

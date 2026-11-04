@@ -246,6 +246,9 @@ class FluentAppMeter {
    var obj=Json.Deserialize<Dictionary<string,object>>(text);
    if(obj!=null){
     object act;
+    if(obj.TryGetValue("action",out act)&&Convert.ToString(act)=="show_main"){
+     FluentGlass.ShowMain();try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}return;
+    }
     if(obj.TryGetValue("action",out act)&&Convert.ToString(act)=="hide_main"){
      FluentGlass.HideMain();try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}return;
     }
