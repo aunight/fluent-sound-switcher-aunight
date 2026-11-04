@@ -10,6 +10,10 @@
 | --- | --- |
 | ![輸入與輸出裝置音量控制](docs/screenshots/devices.png) | ![支援 Windows 主題與 Win7 玻璃質感的設定介面](docs/screenshots/settings.png) |
 
+| 快速音量面板 | 快速設定 |
+| --- | --- |
+| ![快速音量面板與應用程式混音器](docs/screenshots/volume-mixer.png) | ![系統匣快速設定選單](docs/screenshots/quick-settings.png) |
+
 ## 修改範圍
 
 - 右下角音量面板：顯示啟用的音訊裝置、主音量與應用程式混音器；可以靜音、調音量，並以實際聲音強度顯示音量動畫。

@@ -10,6 +10,10 @@ A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94
 | --- | --- |
 | ![Input and output device volume controls](docs/screenshots/devices.png) | ![Settings with Windows theme and Windows 7 glass options](docs/screenshots/settings.png) |
 
+| Quick volume panel | Quick settings |
+| --- | --- |
+| ![Quick volume panel and app mixer](docs/screenshots/volume-mixer.png) | ![System tray quick settings menu](docs/screenshots/quick-settings.png) |
+
 ## Changes
 
 - Tray panel with enabled audio devices, master volume, app mixer, mute controls and audio-responsive meters.

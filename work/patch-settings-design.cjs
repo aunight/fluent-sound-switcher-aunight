@@ -21,7 +21,7 @@ module.exports=function(js){
  part=part.replace('z.jsx(Mh,{children:','z.jsx(Mh,{className:"fss-settings-close-wrap",children:');
  part=part.replace('Ht,{appearance:"secondary",children:r("common.close")','Ht,{className:"fss-settings-close",appearance:"subtle",icon:z.jsx(FssSettingsIcon,{name:"close"}),"aria-label":r("common.close"),title:r("common.close")');
  js=js.slice(0,start)+part+js.slice(end);
- return js+'\nfunction FssSettingsIcon({name}){const icons={general:"\\uE713",hotkeys:"\\uE765",volume:"\\uE767",mute:"\\uE74F",notifications:"\\uE7F4",support:"\\uE897",close:"\\uE8BB"};return z.jsx("span",{className:"fss-settings-icon","aria-hidden":true,children:icons[name]||icons.general})}\n';
+ return js+'\nfunction FssSettingsIcon({name}){if(name==="mute")return z.jsxs("svg",{className:"fss-settings-icon",viewBox:"0 0 20 20",width:18,height:18,fill:"none",stroke:"currentColor",strokeWidth:1.5,strokeLinecap:"round","aria-hidden":true,children:[z.jsx("rect",{x:2,y:4,width:16,height:12,rx:2}),z.jsx("circle",{cx:10,cy:10,r:2,fill:"currentColor",stroke:"none"})]});const icons={general:"\\uE713",hotkeys:"\\uE765",volume:"\\uE767",notifications:"\\uE7F4",support:"\\uE897",close:"\\uE8BB"};return z.jsx("span",{className:"fss-settings-icon","aria-hidden":true,children:icons[name]||icons.general})}\n';
 };
 
 
