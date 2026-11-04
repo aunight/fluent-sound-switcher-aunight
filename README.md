@@ -1,8 +1,8 @@
-# Fluent Sound Switcher — AuNight 修改版
+# 音效裝置切換器 — AuNight 修改版
 
 [English](README.en.md) · [下載安裝檔](https://github.com/aunight/fluent-sound-switcher-aunight/releases)
 
-這是 [Fluent Sound Switcher](https://github.com/Leocadio94/fluent-sound-switcher) 的 Windows 修改版。原始開發者：Gabriel Leocadio；修改與客製化：AuNight。
+音效裝置切換器是 [Fluent Sound Switcher](https://github.com/Leocadio94/fluent-sound-switcher) 的 Windows 修改版。原始開發者：Gabriel Leocadio；修改與客製化：AuNight。
 
 ## 修改範圍
 
