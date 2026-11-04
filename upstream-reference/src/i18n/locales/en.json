@@ -1,0 +1,205 @@
+{
+  "common": {
+    "output": "Output",
+    "input": "Input",
+    "active": "Active",
+    "refresh": "Refresh",
+    "loading": "Loading devices...",
+    "noDevices": "No devices found",
+    "close": "Close"
+  },
+  "update": {
+    "available": "Version {{version}} is available.",
+    "install": "Update now",
+    "installing": "Updating...",
+    "later": "Later"
+  },
+  "devices": {
+    "onlyFavorites": "Favorites only",
+    "addToCycle": "Add to cycle list",
+    "removeFromCycle": "Remove from cycle list",
+    "states": {
+      "active": "",
+      "unplugged": "Disconnected",
+      "disabled": "Disabled"
+    }
+  },
+  "bluetooth": {
+    "device": "Bluetooth device",
+    "connect": "Connect Bluetooth device",
+    "disconnect": "Disconnect Bluetooth device",
+    "menu": "Bluetooth audio devices",
+    "noDevices": "No paired Bluetooth devices",
+    "error": "Could not connect or disconnect the Bluetooth device"
+  },
+  "flyout": {
+    "empty": "Mark favorite devices (★) in the main window to quick-switch from here.",
+    "mute": "Mute microphone",
+    "unmute": "Unmute microphone"
+  },
+  "hotkeys": {
+    "cycleOutput": "Cycle output",
+    "cycleInput": "Cycle input",
+    "toggleMute": "Toggle mic mute",
+    "press": "Press keys...",
+    "none": "None",
+    "conflict": "Could not register: {{list}}. Another app probably owns that shortcut.",
+    "toggleOutputMute": "Toggle output mute",
+    "volumeUp": "Volume up",
+    "volumeDown": "Volume down",
+    "mediaKeysHint": "Media keys (volume, play) can be bound on their own, with no modifier — but while the app runs Windows stops receiving them.",
+    "keyboard": "Keyboard",
+    "gamepad": "Gamepad",
+    "gamepadEnable": "Gamepad shortcuts",
+    "gamepadHint": "While the app runs, holding LB + RB on the gamepad (XInput) and pressing a button triggers its action. The game also receives those buttons — the app does not consume them.",
+    "gamepadNoHome": "The Home button is reserved by the system and cannot be used; the modifier is LB + RB.",
+    "gamepadChord": "LB + RB + {{button}}",
+    "gamepadButtons": {
+      "a": "A",
+      "b": "B",
+      "x": "X",
+      "y": "Y",
+      "dpadUp": "D-pad ↑",
+      "dpadDown": "D-pad ↓"
+    }
+  },
+  "muteIndicator": {
+    "mode": "When to show",
+    "position": "Position",
+    "style": "Style",
+    "styles": {
+      "full": "Icon + text",
+      "icon": "Icon only"
+    },
+    "modes": {
+      "always": "Always",
+      "mutedOnly": "Only when muted",
+      "unmutedOnly": "Only when live",
+      "hidden": "Never"
+    },
+    "muted": "Microphone muted",
+    "live": "Microphone live"
+  },
+  "notifications": {
+    "banner": "On-screen banner",
+    "native": "Windows notification",
+    "sound": "Play sound",
+    "bannerPosition": "Banner position",
+    "test": "Test notification"
+  },
+  "autoSwitch": {
+    "enabled": "Switch on connect",
+    "hint": "When an output device connects (a TV/monitor with audio), make it the default.",
+    "mode": "Which devices",
+    "modes": {
+      "favoritesOnly": "Favorites only",
+      "any": "Any device"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "general": "General",
+      "hotkeys": "Shortcuts",
+      "volume": "Volume",
+      "mute": "Indicator",
+      "notifications": "Notifications",
+      "support": "Support"
+    },
+    "autostart": "Start with Windows",
+    "startMinimized": "Start minimized (to tray)",
+    "showDeviceIcon": "Device icon in tray",
+    "showDeviceIconHint": "Second icon showing the current output (the microphone stays primary).",
+    "trayClickMic": "Left-click action on the microphone icon",
+    "trayClickDevice": "Left-click action on the device icon",
+    "trayClickHint": "What a left-click on a tray icon does. Right-click still opens the menu.",
+    "trayClickDeviceDisabled": "Enable the device icon to configure it.",
+    "trayClickActions": {
+      "flyout": "Open quick device menu",
+      "toggleMicMute": "Mute/unmute microphone",
+      "toggleOutputMute": "Mute/unmute output",
+      "cycleOutput": "Switch to the next device",
+      "openApp": "Open Fluent Sound Switcher",
+      "soundPanel": "Open Windows sound settings"
+    },
+    "btAutoDisconnect": "Disconnect Bluetooth on switch",
+    "btAutoDisconnectHint": "When the default output changes, disconnects the Bluetooth device that stopped being the default (any switch path: app, hotkey, sound panel).",
+    "language": "Language",
+    "theme": "Theme",
+    "themes": {
+      "system": "Follow system",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "systemAccent": "Use the Windows accent colour",
+    "systemAccentHint": "Follows the accent colour set in Windows. Turn it off for the default blue.",
+    "titleBar": "Title bar",
+    "titleBarHint": "The app-drawn bar matches the rest of the interface; the system one brings back the snap-layouts menu when you hover the maximize button.",
+    "titleBars": {
+      "custom": "App",
+      "native": "System"
+    }
+  },
+  "general": {
+    "logs": "Diagnostics",
+    "logsHint": "Opens the folder holding the log file, handy to attach to a bug report.",
+    "openLogs": "Open log folder",
+    "monitor": "Monitor for floating windows",
+    "monitorHint": "Where the mute indicator, the switch banner and the quick menu appear.",
+    "monitors": {
+      "cursor": "Wherever the cursor is",
+      "primary": "Primary monitor",
+      "foreground": "Monitor of the focused window"
+    }
+  },
+  "support": {
+    "intro": "Found a bug? Have a suggestion? Open an issue on GitHub.",
+    "checkUpdates": "Check for updates",
+    "checkUpdatesHint": "Checks GitHub Releases for a newer version; the result arrives as a notification.",
+    "checking": "Checking...",
+    "reportBug": "Report a problem",
+    "reportBugHint": "Report bugs, suggest features, or ask questions about the app.",
+    "openIssues": "Open issues page",
+    "version": "Version {{version}}",
+    "versionLoading": "Version...",
+    "license": "License: {{license}}",
+    "copyright": "Copyright © 2026 Gabriel Leocadio",
+    "viewLicense": "View license"
+  },
+  "errors": {
+    "list": "Could not list the audio devices.",
+    "switch": "Could not switch the device.",
+    "retry": "Try again"
+  },
+  "positions": {
+    "topCenter": "Top (center)",
+    "bottomCenter": "Bottom (center)",
+    "topLeft": "Top (left)",
+    "topRight": "Top (right)",
+    "bottomLeft": "Bottom (left)",
+    "bottomRight": "Bottom (right)"
+  },
+  "volume": {
+    "label": "Volume of {{name}}",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "osd": "Show volume on screen",
+    "osdHint": "Appears when you use the volume hotkeys, including over fullscreen games.",
+    "osdPosition": "Position on screen",
+    "sliders": "Volume slider in the list",
+    "slidersHint": "Adds a slider to every device row.",
+    "slidersInFlyout": "Volume slider in the quick menu",
+    "slidersInFlyoutHint": "The tray menu is compact; leave this off to keep it tight.",
+    "show": "Show volume",
+    "hide": "Hide volume"
+  },
+  "app": {
+    "name": "Fluent Sound Switcher"
+  },
+  "titlebar": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
+  }
+}

@@ -1,0 +1,12 @@
+:root[data-window=flyout][data-fss-glass=win7] .fss-flyout-glass:is([data-mode=audio],[data-mode=menu]){color-scheme:dark;border:1px solid rgba(255,255,255,.34)!important;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35);
+ background:
+  linear-gradient(241deg,#fff0 0%,#fff0 3%,#ffffff04 6%,#ffffff08 9%,#ffffff0b 12.5%,#fff0 15.6%,#ffffff08 18.7%,#ffffff12 21.9%,#ffffff14 25%,#ffffff14 31%,#ffffff16 34.3%,#ffffff13 37.5%,#ffffff09 40.6%,#ffffff06 43.7%,#ffffff0a 46.8%,#ffffff10 50%,#ffffff14 53%,#ffffff0d 56.2%,#ffffff02 59.3%,#ffffff13 62.4%,#ffffff0a 65.6%,#ffffff13 68.7%,#ffffff15 71.8%,#ffffff0f 75%,#ffffff0b 78%,#ffffff07 81.2%,#ffffff04 84.3%,#ffffff01 87.4%,#ffffff01 90.5%,#ffffff06 93.7%,#ffffff0b 97%,#ffffff0b 100%) center/100% 100% no-repeat,
+  linear-gradient(rgba(0,0,0,.6) 0 1px,rgba(255,255,255,.4) 1px 2px,transparent 2px),
+  linear-gradient(rgba(0,0,0,.227),rgba(0,0,0,.227)),
+  linear-gradient(rgba(255,185,0,.3),rgba(255,185,0,.3))!important;
+ --colorNeutralForeground1:#fff;--colorNeutralForeground2:#f4f1ea;--colorNeutralForeground3:#e9e3d6;--colorBrandForeground1:#ffc21a;--colorBrandStroke1:#ffc21a;--colorCompoundBrandBackground:#ffc21a;
+ --colorSubtleBackgroundHover:rgba(255,255,255,.16);--colorSubtleBackgroundPressed:rgba(255,255,255,.24);--colorNeutralBackground1Hover:rgba(255,255,255,.16);
+ --fss-slider-fill:#ffc21a;--fss-slider-track:rgba(255,255,255,.3);--fss-thumb-edge:rgba(60,40,0,.55);--fss-accent-light:#ffd65a}
+:root[data-window=flyout][data-fss-glass=win7]{--fss-ink:#fff;--fss-line:rgba(255,255,255,.25);--fss-hover:rgba(255,255,255,.16);--fss-popup:rgba(70,55,20,.96)}
+:root[data-window=flyout][data-fss-glass=win7] .fss-flyout-glass:is([data-mode=audio],[data-mode=menu]) *{text-shadow:0 1px 2px rgba(0,0,0,.55)!important}
+:root[data-window=main][data-fss-glass=win7] #root>.fui-FluentProvider{background-image:linear-gradient(130deg,transparent 10%,rgba(255,255,255,.18) 22%,transparent 25%,rgba(255,255,255,.08) 60%,transparent 64%)!important}

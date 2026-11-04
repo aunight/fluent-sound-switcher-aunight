@@ -1,0 +1,19 @@
+/* Windows light/dark appearance, shared by every app surface. */
+:root{--fss-sheet:rgba(242,245,249,.88);--fss-ink:#202124;--fss-line:rgba(0,0,0,.16);--fss-hover:rgba(0,0,0,.06);--fss-track:rgba(0,0,0,.22);--fss-popup:rgba(248,250,253,.97)}
+:root[data-fss-theme=dark]{--fss-sheet:rgba(27,30,35,.86);--fss-ink:#f4f5f7;--fss-line:rgba(255,255,255,.2);--fss-hover:rgba(255,255,255,.1);--fss-track:rgba(255,255,255,.25);--fss-popup:rgba(35,38,43,.97)}
+:root[data-window] .fui-FluentProvider{--fss-slider-fill:var(--fss-accent,#0078d4);--fss-slider-track:var(--fss-track);--colorBrandForeground1:var(--fss-accent);--colorBrandStroke1:var(--fss-accent);--colorCompoundBrandBackground:var(--fss-accent)}
+:root[data-window=flyout] .fss-flyout-glass:is([data-mode=audio],[data-mode=menu]){color-scheme:inherit;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 40%,rgba(255,255,255,.06) 70%,transparent),var(--fss-sheet)!important;border-color:var(--fss-line)!important;color:var(--fss-ink)!important;--colorNeutralForeground1:var(--fss-ink);--colorNeutralForeground2:var(--fss-ink);--colorNeutralForeground3:var(--fss-ink);--fss-slider-fill:var(--fss-accent,#0078d4);--fss-slider-track:var(--fss-track)}
+:root[data-window=flyout] .fss-flyout-glass:is([data-mode=audio],[data-mode=menu]) *{color:var(--fss-ink)!important;text-shadow:none!important}
+:root[data-window=flyout] .fss-flyout-glass[data-mode=menu] [role=menu] *{color:var(--fss-ink)!important;text-shadow:none!important}
+:root[data-window=flyout] .fss-flyout-glass button:hover:not([data-mute-control]){background-color:var(--fss-hover)!important}
+:root[data-window=flyout] .fss-flyout-glass [role=separator]{background:var(--fss-line)!important}
+:root[data-window] [data-app-preview],:root[data-window] .fss-app-context[role=menu]{background:var(--fss-popup)!important;color:var(--fss-ink)!important;border-color:var(--fss-line)!important;box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.12)!important}
+:root[data-window] [data-app-preview] *,:root[data-window] .fss-app-context[role=menu] *{color:var(--fss-ink)!important;text-shadow:none!important}
+:root[data-window] .fss-app-context button:hover,:root[data-window] .fss-app-context button:focus-visible{background:var(--fss-hover)!important}
+:root[data-window] .fss-app-context-separator{background:var(--fss-line)}
+:root[data-window] .fss-app-context-submenu{border-color:var(--fss-line)}
+:root[data-window=flyout] .fss-flyout-glass[data-mode=audio] button[data-mute-control][aria-pressed=true] *{color:var(--fss-accent,#0078d4)!important}
+:root[data-window] [aria-checked=true] [data-fss-toggle]{background:var(--fss-accent,#0078d4)!important;border-color:var(--fss-accent-dark,#005a9e)!important}
+:root[data-window] [role=tooltip],:root[data-window] .fui-Tooltip__arrow{background:var(--fss-popup)!important;color:var(--fss-ink)!important}
+:root[data-window] [role=tooltip] *{color:var(--fss-ink)!important}
+@media(prefers-reduced-transparency:reduce){:root{--fss-sheet:#f2f5f9}:root[data-fss-theme=dark]{--fss-sheet:#1b1e23}}

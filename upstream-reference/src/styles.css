@@ -1,0 +1,48 @@
+:root {
+  /* Declare both schemes so WebView2 respects our explicit (Fluent) theming
+     instead of applying its own auto-dark heuristic to form controls. The
+     active scheme is pinned at runtime from the resolved theme. */
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Fluent's webLightTheme/webDarkTheme paint their own surface via
+   FluentProvider; keep the document background in sync to avoid a flash. */
+body {
+  overflow: hidden;
+}
+
+/* The auxiliary windows (overlay/flyout/banner) are transparent so only their
+   pill/card is painted. Scoped by data-window so these rules never affect the
+   main window (which must fill its area). */
+:root[data-window="overlay"],
+:root[data-window="overlay"] body,
+:root[data-window="overlay"] #root,
+:root[data-window="flyout"],
+:root[data-window="flyout"] body,
+:root[data-window="flyout"] #root,
+:root[data-window="banner"],
+:root[data-window="banner"] body,
+:root[data-window="banner"] #root {
+  background: transparent !important;
+}
+
+/* Center the pill in the overlay/banner windows so the glow has room. */
+:root[data-window="overlay"] #root,
+:root[data-window="banner"] #root {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

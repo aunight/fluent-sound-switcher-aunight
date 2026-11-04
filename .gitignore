@@ -1,0 +1,5 @@
+outputs/
+work/inno-compiler/
+work/MicrosoftEdgeWebview2Setup.exe
+work/current-ui-patched.js
+*.log

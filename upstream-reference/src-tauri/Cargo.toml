@@ -1,0 +1,68 @@
+[package]
+name = "fluent-sound-switcher"
+version = "0.6.0"
+description = "Switch Windows 11 audio input/output devices with a modern Fluent 2 UI"
+authors = ["Gabriel Leocadio"]
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "fluent_sound_switcher_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2.11.0", features = ["tray-icon", "image-png"] }
+tauri-plugin-store = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-log = "2"
+log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Only for `sleep` — the startup update check retries while the network comes up.
+tokio = { version = "1", features = ["time"] }
+windows = { version = "0.58", features = [
+  "implement",
+  "Win32_Foundation",
+  "Win32_Media_Audio",
+  "Win32_Media_Audio_Endpoints",
+  # IKsControl + KSPROPSETID_BtAudio for the BT connect/disconnect one-shot
+  # property (`audio/bluetooth.rs`).
+  "Win32_Media_KernelStreaming",
+  "Win32_System_Com",
+  "Win32_System_Com_StructuredStorage",
+  "Win32_System_Console",
+  "Win32_System_Environment",
+  "Win32_Graphics_Gdi",
+  "Win32_UI_Shell",
+  "Win32_UI_Shell_PropertiesSystem",
+  "Win32_UI_WindowsAndMessaging",
+  # Resume/lock notifications for the overlay recovery (`power.rs`).
+  "Win32_System_RemoteDesktop",
+  # WinEvent hook that keeps the mute overlay above "Show desktop" (`shell.rs`).
+  "Win32_System_Threading",
+  "Win32_UI_Accessibility",
+  # XInput polling for gamepad shortcuts (`gamepad.rs`).
+  "Win32_UI_Input_XboxController",
+  "Win32_Devices_FunctionDiscovery",
+  # Bluetooth radios and paired-device connect/disconnect (`audio/bluetooth.rs`).
+  "Win32_Devices_Bluetooth",
+  # WinRT, for the Windows accent colour (UISettings).
+  "UI",
+  "UI_ViewManagement",
+  "Foundation",
+] }
+# Required so the `#[interface]` macro's generated `::windows_core` paths resolve.
+windows-core = "0.58"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

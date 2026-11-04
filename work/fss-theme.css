@@ -1,0 +1,181 @@
+/* Layout for the volume rows (number on the right, real peak bar inside the track). */
+.fss-volume-control{display:flex;align-items:center;gap:8px;flex:1;min-width:0;width:100%}
+.fss-volume-track{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:26px}
+.fss-volume-track>.fss-volume-slider{flex:1;min-width:0;width:100%}
+.fss-volume-percent{flex:0 0 32px;text-align:center;font:600 12px/1.2 system-ui,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;user-select:none;color:inherit}
+/* EarTrumpet-style meter: a lighter band inside the volume fill, as thick as the track; width = peak x volume, so it stops at the thumb. */
+.fss-track-motion{position:absolute;left:0;top:50%;height:3px;width:0;max-width:100%;transform:translateY(-50%);border-radius:3px;pointer-events:none;transition:width 60ms linear}
+.fss-volume-slider::-webkit-slider-thumb{box-sizing:border-box;width:14px;height:14px;margin-top:-5.5px;border-radius:50%;background:var(--fss-slider-fill,var(--fss-accent,#0078d4));border:3px solid #f7f7f7;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.24);transition:border-width 120ms ease,box-shadow 120ms ease}
+.fss-volume-slider:hover::-webkit-slider-thumb{border-width:2.5px}
+.fss-volume-slider:active::-webkit-slider-thumb{border-width:4px}
+.fss-volume-slider:disabled::-webkit-slider-thumb{background:#9b9b9b;border-color:#e7e7e7;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+.fss-app-mute{display:flex;align-items:center;justify-content:center;flex:0 0 24px;width:24px;height:26px;margin-right:6px;padding:2px;border:1px solid transparent;border-radius:6px;background:transparent;color:inherit;cursor:pointer}
+.fss-app-mute svg{width:18px;height:18px}
+:root[data-window=flyout] [data-route-scroll]{scrollbar-width:none!important}
+:root[data-window=flyout] [data-route-scroll]::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+.fss-flyout-glass{--fss-device-volume-padding:0 0 6px 8px}
+.fss-flyout-glass[data-density=compact]{--fss-device-volume-padding:0 0 0 6px;--fss-section-padding:8px 10px 4px 8px}
+
+/* Small panel: Windhawk Windows7 accent tint (0.3) and the cached taskbar strip (black alpha 58/255) over native desktop blur.
+   Scale reflections across the entire panel so input-device rows cannot expose a seam.
+   Gold is reserved for the volume controls. */
+.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]){color-scheme:dark;border:1px solid rgba(255,255,255,.34)!important;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35);
+ background:
+  linear-gradient(241deg,#fff0 0%,#fff0 3%,#ffffff04 6%,#ffffff08 9%,#ffffff0b 12.5%,#fff0 15.6%,#ffffff08 18.7%,#ffffff12 21.9%,#ffffff14 25%,#ffffff14 31%,#ffffff16 34.3%,#ffffff13 37.5%,#ffffff09 40.6%,#ffffff06 43.7%,#ffffff0a 46.8%,#ffffff10 50%,#ffffff14 53%,#ffffff0d 56.2%,#ffffff02 59.3%,#ffffff13 62.4%,#ffffff0a 65.6%,#ffffff13 68.7%,#ffffff15 71.8%,#ffffff0f 75%,#ffffff0b 78%,#ffffff07 81.2%,#ffffff04 84.3%,#ffffff01 87.4%,#ffffff01 90.5%,#ffffff06 93.7%,#ffffff0b 97%,#ffffff0b 100%) center/100% 100% no-repeat,
+  linear-gradient(rgba(0,0,0,.6) 0 1px,rgba(255,255,255,.4) 1px 2px,transparent 2px),
+  linear-gradient(rgba(0,0,0,.227),rgba(0,0,0,.227)),
+  linear-gradient(rgba(255,185,0,.3),rgba(255,185,0,.3))!important;
+ --colorNeutralForeground1:#fff;--colorNeutralForeground2:#f4f1ea;--colorNeutralForeground3:#e9e3d6;--colorBrandForeground1:var(--fss-accent,#0078d4);--colorBrandStroke1:var(--fss-accent,#0078d4);--colorCompoundBrandBackground:var(--fss-accent,#0078d4);
+ --colorSubtleBackgroundHover:rgba(255,255,255,.16);--colorSubtleBackgroundPressed:rgba(255,255,255,.24);--colorNeutralBackground1Hover:rgba(255,255,255,.16);
+ --fss-slider-fill:var(--fss-accent,#0078d4);--fss-slider-track:rgba(255,255,255,.3);--fss-thumb-edge:rgba(60,40,0,.55);--fss-accent-light:var(--fss-accent,#0078d4)}
+.fss-flyout-glass:before{display:none!important}
+.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]) *{color:#fff!important;text-shadow:0 0 5px rgba(0,0,0,.5),0 1px 1px rgba(0,0,0,.45)}
+.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]) img{filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]) button:hover:not([aria-pressed=true]){background-color:rgba(255,255,255,.16)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]) button:active:not([aria-pressed=true]){background-color:rgba(255,255,255,.26)!important}
+.fss-flyout-glass[data-mode=audio] button[data-mute-control][aria-pressed=true]{background:transparent!important;border:1px solid transparent!important;border-radius:6px;box-shadow:none!important}
+.fss-flyout-glass[data-mode=audio] button[data-mute-control][aria-pressed=true] *{color:var(--fss-accent,#0078d4)!important;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.fss-flyout-glass[data-mode=audio] .fss-track-motion{background:rgba(255,255,255,.62)}
+.fss-flyout-glass .fss-volume-control,.fss-flyout-glass .fss-volume-track>.fss-volume-slider{opacity:1!important}
+.fss-flyout-glass button:focus-visible,.fss-flyout-glass .fss-volume-slider:focus-visible{outline:2px solid var(--fss-accent,#0078d4)!important;outline-offset:-2px}
+
+/* Gear: centred on the device power buttons and the volume numbers, level with the first heading. */
+.fss-panel-settings{position:absolute;z-index:3;right:28px;top:25px;display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:4px;border:1px solid transparent;border-radius:7px;background:transparent;cursor:pointer;color:inherit}
+.fss-panel-settings svg{width:19px;height:19px}
+.fss-flyout-glass[data-density=compact] .fss-panel-settings{right:24px;top:16px}
+.fss-flyout-glass[data-mode=audio] section:first-of-type h2{padding-right:40px}
+.fss-flyout-glass[data-mode=menu] .fss-panel-settings{display:none}
+
+/* Tray menu (same window, menu mode): the same Win7 glass as the panel, white text; the generic light popover rule below is overridden here. */
+:root[data-window=flyout] .fss-flyout-glass[data-mode=menu] [role=menu]{background:transparent!important;box-shadow:none!important;border:0!important}
+:root[data-window=flyout] .fss-flyout-glass[data-mode=menu] [role=menu] *{color:#fff!important;text-shadow:0 0 5px rgba(0,0,0,.5),0 1px 1px rgba(0,0,0,.45)!important}
+:root[data-window=flyout] .fss-flyout-glass[data-mode=menu] :is([role=menuitem],[role=menuitemcheckbox],[role=menuitemradio]):hover{background-color:rgba(255,255,255,.16)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+:root[data-window=flyout] .fss-flyout-glass[data-mode=menu] [role=separator]{background:rgba(255,255,255,.22)!important}
+/* Popovers outside the tray menu: light frosted sheet with dark text. */
+:root:is([data-window=main],[data-window=flyout]) :is(.fui-MenuPopover,[role=menu],[role=listbox]){background:rgba(252,251,248,.97)!important;color:#1b1b1f!important;border:1px solid rgba(0,0,0,.12)!important;box-shadow:0 8px 24px rgba(0,0,0,.18),inset 0 1px 0 #fff!important}
+:root:is([data-window=main],[data-window=flyout]) :is(.fui-MenuPopover,[role=menu],[role=listbox]) *{color:#1b1b1f!important;text-shadow:none!important}
+:root:is([data-window=main],[data-window=flyout]) :is([role=menuitem],[role=menuitemcheckbox],[role=option]):hover{background-color:rgba(255,185,0,.24)!important}
+[data-fss-toggle]{width:34px!important;height:20px!important;padding:2px!important;border:1px solid #6f7378!important;background:#a2a7ad!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.2);transition:background-color 120ms ease,border-color 120ms ease}
+[data-fss-toggle]::before{width:14px!important;height:14px!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform 140ms ease}
+[aria-checked=true] [data-fss-toggle]{background:var(--fss-accent,#0078d4)!important;border-color:#8a6200!important}
+[aria-checked=true] [data-fss-toggle]::before{transform:translateX(14px)!important}
+:root:is([data-window=main],[data-window=flyout]) [role=tooltip]{background:#fbfaf6!important;color:#1b1b1f!important;border:1px solid rgba(0,0,0,.14);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+:root:is([data-window=main],[data-window=flyout]) [role=tooltip] *{color:#1b1b1f!important;text-shadow:none!important}
+:root:is([data-window=main],[data-window=flyout]) .fui-Tooltip__arrow{background-color:#fbfaf6!important}
+
+/* Main window: macOS-style vibrancy. DWM supplies the real desktop blur behind the transparent page; one light tint
+   sits on top, grouped content uses a thicker near-white layer, and gold is reserved for controls. */
+:root[data-window=main],:root[data-window=main] body,:root[data-window=main] #root{background:transparent!important}
+:root[data-window=main] .fui-FluentProvider{color-scheme:light;
+ 
+ --colorNeutralForeground1:#1d1d1f;--colorNeutralForeground1Hover:#1d1d1f;--colorNeutralForeground1Pressed:#1d1d1f;--colorNeutralForeground1Selected:#1d1d1f;
+ --colorNeutralForeground2:#38383d;--colorNeutralForeground2Hover:#1d1d1f;--colorNeutralForeground2Pressed:#1d1d1f;--colorNeutralForeground2Selected:#1d1d1f;
+ --colorNeutralForeground3:#48484e;--colorNeutralForeground4:#58585f;--colorNeutralForegroundDisabled:#8b8b92;--colorNeutralForegroundInverted:#fff;--colorNeutralForegroundOnBrand:#221800;
+ --colorNeutralBackground1:rgba(255,255,255,.74);--colorNeutralBackground1Hover:rgba(255,255,255,.9);--colorNeutralBackground1Pressed:#fff;--colorNeutralBackground1Selected:rgba(255,255,255,.9);
+ --colorNeutralBackground2:rgba(255,255,255,.5);--colorNeutralBackground3:rgba(255,255,255,.35);--colorNeutralBackground4:rgba(255,255,255,.3);--colorNeutralBackgroundDisabled:rgba(0,0,0,.05);
+ --colorSubtleBackgroundHover:rgba(0,0,0,.055);--colorSubtleBackgroundPressed:rgba(0,0,0,.09);--colorSubtleBackgroundSelected:rgba(0,0,0,.07);
+ --colorNeutralStroke1:rgba(0,0,0,.16);--colorNeutralStroke1Hover:rgba(0,0,0,.24);--colorNeutralStroke1Pressed:rgba(0,0,0,.3);--colorNeutralStroke2:rgba(0,0,0,.09);--colorNeutralStroke3:rgba(0,0,0,.06);--colorNeutralStrokeAccessible:#6e6e75;--colorNeutralStrokeDisabled:rgba(0,0,0,.1);--colorTransparentStroke:transparent;
+ --colorBrandForeground1:var(--fss-accent,#0078d4)!important;--colorBrandForeground2:var(--fss-accent,#0078d4);--colorBrandForegroundLink:var(--fss-accent,#0078d4);--colorBrandStroke1:var(--fss-accent,#0078d4)!important;--colorBrandStroke2:var(--fss-accent,#0078d4);
+ --colorCompoundBrandStroke:var(--fss-accent,#0078d4);--colorCompoundBrandStrokeHover:var(--fss-accent,#0078d4);--colorCompoundBrandStrokePressed:var(--fss-accent,#0078d4);--colorCompoundBrandForeground1:var(--fss-accent,#0078d4);
+ --colorCompoundBrandBackground:var(--fss-accent,#0078d4)!important;--colorCompoundBrandBackgroundHover:var(--fss-accent,#0078d4);--colorCompoundBrandBackgroundPressed:var(--fss-accent,#0078d4);
+ --colorBrandBackground:var(--fss-accent,#0078d4)!important;--colorBrandBackgroundHover:var(--fss-accent,#0078d4);--colorBrandBackgroundPressed:var(--fss-accent,#0078d4);--colorBrandBackground2:rgba(229,164,0,.14);
+ --fss-slider-fill:var(--fss-accent,#0078d4);--fss-slider-track:rgba(0,0,0,.15);color:#1d1d1f;font-optical-sizing:auto}
+:root[data-window=main] #root>.fui-FluentProvider{background:rgba(247,247,249,.78)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.35)}
+:root[data-window=main] #root>.fui-FluentProvider>div,:root[data-window=main] main{background:transparent!important}
+:root[data-window=main] #root>.fui-FluentProvider>div>div:first-child span{font-weight:600;letter-spacing:.01em}
+:root[data-window=main] main section{background:rgba(255,255,255,.6);border:0!important;border-radius:14px;margin:0 0 14px!important;padding:8px 0 10px!important;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.9)}
+:root[data-window=main] main section h2{font-weight:600;letter-spacing:.01em;color:#1d1d1f}
+:root[data-window=main] footer{background:transparent!important;border-top:1px solid rgba(0,0,0,.08)!important}
+:root[data-window=main] .fss-acrylic{background:rgba(250,250,252,.6)!important;border-color:rgba(255,255,255,.7)}
+:root[data-window=main] .fui-Switch__indicator{background:rgba(120,120,128,.28)!important;border:1px solid rgba(0,0,0,.2)!important;color:#fff!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}
+:root[data-window=main] .fui-Switch__indicator *{color:#fff!important;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35))}
+:root[data-window=main] .fui-Switch__input:checked~.fui-Switch__indicator{background:var(--fss-accent,#0078d4)!important;border-color:var(--fss-accent,#0078d4)!important}
+:root[data-window=main] .fui-Switch__input:focus-visible~.fui-Switch__indicator,:root[data-window=main] button:focus-visible{outline:2px solid var(--fss-accent,#0078d4)!important;outline-offset:2px}
+:root[data-window=main] .fui-Switch__label{color:#1d1d1f!important}
+:root[data-window=main] ::-webkit-scrollbar{width:11px;height:11px;background:transparent}
+:root[data-window=main] ::-webkit-scrollbar-button{display:none}
+:root[data-window=main] ::-webkit-scrollbar-track{background:transparent}
+:root[data-window=main] ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.24);border:3px solid transparent;border-radius:11px;background-clip:padding-box}
+:root[data-window=main] ::-webkit-scrollbar-thumb:hover{background-color:rgba(0,0,0,.38)}
+
+/* Settings: a modal sheet, so the window dims behind it and the sheet is a thicker, almost opaque material
+   that also blurs the page content beneath it. */
+:root[data-window=main] .fui-DialogSurface__backdrop{background:rgba(24,24,28,.32)!important}
+:root[data-window=main] .fui-FluentProvider>.fui-DialogSurface{background:rgba(250,250,252,.92)!important;backdrop-filter:blur(30px) saturate(160%);color:#1d1d1f!important;border:1px solid rgba(255,255,255,.85)!important;border-radius:16px!important;box-shadow:0 0 0 .5px rgba(0,0,0,.14),0 24px 64px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.12),inset 0 1px 0 #fff!important}
+
+/* Dark theme (setting or system): the same structure as macOS dark vibrancy. A graphite tint over the DWM blur keeps white
+   text above 6:1 and secondary text above 4.5:1 even over a white desktop; gold stays the control accent. */
+:root[data-window=main][data-fss-theme=dark] .fui-FluentProvider{color-scheme:dark;
+ --colorNeutralForeground1:#f5f5f7;--colorNeutralForeground1Hover:#fff;--colorNeutralForeground1Pressed:#fff;--colorNeutralForeground1Selected:#fff;
+ --colorNeutralForeground2:#e3e3e8;--colorNeutralForeground2Hover:#fff;--colorNeutralForeground2Pressed:#fff;--colorNeutralForeground2Selected:#fff;
+ --colorNeutralForeground3:#cfcfd5;--colorNeutralForeground4:#b9b9c0;--colorNeutralForegroundDisabled:#8e8e95;--colorNeutralForegroundInverted:#1d1d1f;--colorNeutralForegroundOnBrand:#221800;
+ --colorNeutralBackground1:rgba(255,255,255,.08);--colorNeutralBackground1Hover:rgba(255,255,255,.13);--colorNeutralBackground1Pressed:rgba(255,255,255,.17);--colorNeutralBackground1Selected:rgba(255,255,255,.13);
+ --colorNeutralBackground2:rgba(255,255,255,.06);--colorNeutralBackground3:rgba(255,255,255,.04);--colorNeutralBackground4:rgba(255,255,255,.03);--colorNeutralBackgroundDisabled:rgba(255,255,255,.04);
+ --colorSubtleBackgroundHover:rgba(255,255,255,.08);--colorSubtleBackgroundPressed:rgba(255,255,255,.12);--colorSubtleBackgroundSelected:rgba(255,255,255,.1);
+ --colorNeutralStroke1:rgba(255,255,255,.18);--colorNeutralStroke1Hover:rgba(255,255,255,.26);--colorNeutralStroke1Pressed:rgba(255,255,255,.32);--colorNeutralStroke2:rgba(255,255,255,.11);--colorNeutralStroke3:rgba(255,255,255,.07);--colorNeutralStrokeAccessible:#a1a1a8;--colorNeutralStrokeDisabled:rgba(255,255,255,.1);
+ --colorBrandForeground1:var(--fss-accent,#0078d4)!important;--colorBrandForeground2:var(--fss-accent,#0078d4);--colorBrandForegroundLink:var(--fss-accent,#0078d4);--colorBrandStroke1:var(--fss-accent,#0078d4)!important;--colorBrandStroke2:var(--fss-accent,#0078d4);
+ --colorCompoundBrandStroke:var(--fss-accent,#0078d4);--colorCompoundBrandStrokeHover:var(--fss-accent,#0078d4);--colorCompoundBrandStrokePressed:var(--fss-accent,#0078d4);--colorCompoundBrandForeground1:var(--fss-accent,#0078d4);
+ --colorCompoundBrandBackground:var(--fss-accent,#0078d4)!important;--colorCompoundBrandBackgroundHover:var(--fss-accent,#0078d4);--colorCompoundBrandBackgroundPressed:var(--fss-accent,#0078d4);
+ --colorBrandBackground:var(--fss-accent,#0078d4)!important;--colorBrandBackgroundHover:var(--fss-accent,#0078d4);--colorBrandBackgroundPressed:var(--fss-accent,#0078d4);--colorBrandBackground2:rgba(255,185,0,.16);
+ --fss-slider-fill:var(--fss-accent,#0078d4);--fss-slider-track:rgba(255,255,255,.2);color:#f5f5f7}
+:root[data-window=main][data-fss-theme=dark] #root>.fui-FluentProvider{background:rgba(30,30,34,.78)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.06)}
+:root[data-window=main][data-fss-theme=dark] main section{background:rgba(255,255,255,.05);box-shadow:0 0 0 .5px rgba(255,255,255,.14),0 1px 3px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
+:root[data-window=main][data-fss-theme=dark] main section h2,:root[data-window=main][data-fss-theme=dark] .fui-Switch__label{color:#f5f5f7!important}
+:root[data-window=main][data-fss-theme=dark] footer{border-top-color:rgba(255,255,255,.1)!important}
+:root[data-window=main][data-fss-theme=dark] .fss-acrylic{background:rgba(44,44,48,.6)!important;border-color:rgba(255,255,255,.14)}
+:root[data-window=main][data-fss-theme=dark] .fui-Switch__indicator{background:rgba(120,120,128,.5)!important;border-color:rgba(255,255,255,.22)!important}
+:root[data-window=main][data-fss-theme=dark] .fui-Switch__input:checked~.fui-Switch__indicator{background:var(--fss-accent,#0078d4)!important;border-color:var(--fss-accent,#0078d4)!important}
+:root[data-window=main][data-fss-theme=dark] .fui-Switch__input:focus-visible~.fui-Switch__indicator,:root[data-window=main][data-fss-theme=dark] button:focus-visible{outline-color:var(--fss-accent,#0078d4)!important}
+:root[data-window=main][data-fss-theme=dark] ::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.28)}
+:root[data-window=main][data-fss-theme=dark] ::-webkit-scrollbar-thumb:hover{background-color:rgba(255,255,255,.42)}
+:root[data-window=main][data-fss-theme=dark] .fui-DialogSurface__backdrop{background:rgba(0,0,0,.45)!important}
+:root[data-window=main][data-fss-theme=dark] .fui-FluentProvider>.fui-DialogSurface{background:rgba(40,40,44,.93)!important;color:#f5f5f7!important;border:1px solid rgba(255,255,255,.13)!important;box-shadow:0 0 0 .5px rgba(0,0,0,.6),0 24px 64px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1)!important}
+:root[data-window=main][data-fss-theme=dark] :is(.fui-MenuPopover,[role=menu],[role=listbox]){background:rgba(44,44,48,.97)!important;color:#f5f5f7!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)!important}
+:root[data-window=main][data-fss-theme=dark] :is(.fui-MenuPopover,[role=menu],[role=listbox]) *{color:#f5f5f7!important}
+:root[data-window=main][data-fss-theme=dark] :is([role=menuitem],[role=menuitemcheckbox],[role=option]):hover{background-color:rgba(255,185,0,.3)!important}
+:root[data-window=main][data-fss-theme=dark] [role=tooltip],:root[data-window=main][data-fss-theme=dark] .fui-Tooltip__arrow{background:#2c2c30!important;border-color:rgba(255,255,255,.16)}
+:root[data-window=main][data-fss-theme=dark] [role=tooltip] *,:root[data-window=main][data-fss-theme=dark] [role=tooltip]{color:#f5f5f7!important}
+
+@media(prefers-reduced-motion:reduce){.fss-track-motion,[data-fss-toggle],[data-fss-toggle]::before{transition:none}}
+@media(prefers-reduced-transparency:reduce){:root[data-window=main] #root>.fui-FluentProvider{background:#f5f5f7!important}:root[data-window=main] .fui-FluentProvider>.fui-DialogSurface{background:#fbfbfd!important}.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]){background:#3a3220!important}:root[data-window=main][data-fss-theme=dark] #root>.fui-FluentProvider{background:#1e1e22!important}:root[data-window=main][data-fss-theme=dark] .fui-FluentProvider>.fui-DialogSurface{background:#2a2a2e!important}}
+@media(prefers-contrast:more){:root[data-window=main] #root>.fui-FluentProvider{background:#fff!important}:root[data-window=main] main section{box-shadow:0 0 0 1px #6e6e75}.fss-flyout-glass:is([data-mode=audio],[data-mode=menu]){background:#1e1a10!important}:root[data-window=main][data-fss-theme=dark] #root>.fui-FluentProvider{background:#000!important}:root[data-window=main][data-fss-theme=dark] main section{box-shadow:0 0 0 1px #a1a1a8}}
+
+/* App artwork stays bare; keyboard focus still has its visible outline. */
+:root:is([data-window=main],[data-window=flyout]) button[data-mute-control][aria-pressed=true]{background:transparent!important;box-shadow:none!important;border-color:transparent!important}
+:root:is([data-window=main],[data-window=flyout]) button[data-mute-control]:is(:hover,:active,:focus-visible){background:transparent!important;box-shadow:none!important;border-color:transparent!important}
+:root:is([data-window=main],[data-window=flyout]) [data-app-pid]>button:first-child,
+:root:is([data-window=main],[data-window=flyout]) [data-app-pid]>button:first-child:is(:hover,:active,:focus-visible){background:transparent!important;box-shadow:none!important}
+
+/* App icon/name hover card, including its drag preview: dark amber glass. */
+:root:is([data-window=main],[data-window=flyout]) [data-app-preview],
+:root[data-window=main][data-fss-theme=dark] [data-app-preview]{background:linear-gradient(145deg,rgba(185,125,8,.88),rgba(92,58,2,.94))!important;backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border:1px solid rgba(255,214,113,.44)!important;border-radius:10px!important;box-shadow:inset 0 1px 0 rgba(255,235,179,.26),0 6px 20px rgba(40,24,0,.32)!important;color:#fff4d9!important}
+:root:is([data-window=main],[data-window=flyout]) [data-app-preview] *,
+:root[data-window=main][data-fss-theme=dark] [data-app-preview] *{color:#fff4d9!important;text-shadow:0 1px 2px rgba(45,25,0,.5)!important}
+@media(prefers-reduced-motion:reduce){.fss-volume-slider::-webkit-slider-thumb{transition:none}}
+:root[data-window=flyout],:root[data-window=flyout] body{overflow:hidden!important}
+
+/* Insert marker for app ordering inside one output device. */
+[data-app-pid].fss-order-before{box-shadow:inset 0 2px 0 var(--fss-slider-fill,var(--fss-accent,#0078d4))!important}
+[data-app-pid].fss-order-after{box-shadow:inset 0 -2px 0 var(--fss-slider-fill,var(--fss-accent,#0078d4))!important}
+
+/* Per-app context menu, including ignored-app recovery from mixer background. */
+.fss-app-context{position:fixed;z-index:10000;min-width:190px;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px);overflow-y:auto;padding:6px;border:1px solid rgba(255,225,151,.4);border-radius:10px;background:linear-gradient(140deg,rgba(90,72,25,.96),rgba(44,36,18,.97));backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.15);color:#fff;text-align:left}
+.fss-app-context button{display:block;width:100%;min-height:32px;padding:6px 12px;border:0;border-radius:5px;background:transparent;color:inherit!important;font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.fss-app-context button:hover,.fss-app-context button:focus-visible{background:rgba(255,220,130,.17)!important;outline:1px solid rgba(255,230,169,.25);outline-offset:-1px}
+.fss-app-context button[aria-checked=true]::after{content:'✓';float:right;margin-left:16px}
+.fss-app-context button:disabled{opacity:.45;cursor:default}
+.fss-app-context-title{padding:6px 12px 8px;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.fss-app-context-submenu{margin:2px 0 4px 8px;padding-left:5px;border-left:1px solid rgba(255,225,151,.25)}
+.fss-app-context-separator{height:1px;margin:5px;background:rgba(255,255,255,.18)}
+.fss-app-context-error{padding:6px 12px;font-size:12px;max-width:230px;overflow-wrap:anywhere}
+
+:root[data-window] .fss-app-context[role=menu]{background:linear-gradient(140deg,rgba(90,72,25,.96),rgba(44,36,18,.97))!important;color:#fff!important;border-color:rgba(255,225,151,.4)!important}
+:root[data-window] .fss-app-context[role=menu] *{color:#fff!important;text-shadow:none!important}
+:root[data-window] .fss-app-context button:hover,:root[data-window] .fss-app-context button:focus-visible{background:rgba(255,220,130,.17)!important}
+
+.fss-app-context button{display:flex;align-items:center;gap:10px}
+.fss-app-context-icon{display:block;flex:0 0 17px;width:17px;height:17px}
+.fss-app-context-label{flex:1;min-width:0}
+.fss-app-context button[aria-checked=true]::after{float:none;margin-left:auto}
+.fss-app-context-title{display:flex;align-items:center;gap:10px}
+.fss-app-context-artwork{width:19px;height:19px;object-fit:contain;border-radius:3px}

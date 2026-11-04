@@ -1,0 +1,26 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const context=vm.createContext({Date,Map,Promise,innerWidth:500,innerHeight:900});
+context.x={useRef:()=>({current:null}),useState:value=>[context.hookValues?.length?context.hookValues.shift():value,()=>{}],useLayoutEffect:()=>{},useEffect:()=>{}};
+context.z={jsx:(type,props,key)=>({type,props,key}),jsxs:(type,props,key)=>({type,props,key})};context.gh=function RefreshIcon(){};
+vm.runInContext(fs.readFileSync('work/fss-session-policy.js','utf8')+fs.readFileSync('work/fss-app-context.js','utf8'),context);
+const store={};context.Mc={load:async()=>({reload:async()=>{},get:async key=>store[key],set:async(key,value)=>{store[key]=JSON.parse(JSON.stringify(value))},save:async()=>{}})};
+let muted=null,routed=null,closed=0,refreshed=0;
+context.props={context:{session:{pid:123,name:'Steam',appId:'Steam',fssOrderKey:'steam',deviceId:'a',muted:false},x:10,y:20},devices:[{id:'a',name:'Current'},{id:'b',name:'Other'}],onClose:()=>closed++,onRefresh:()=>refreshed++,onMute:async session=>{muted=session.pid},onRoute:async(session,device)=>{routed=[session.pid,device]}};
+const render=expanded=>{context.hookValues=[expanded||'',false,''];return vm.runInContext('FssAppContextMenu(props)',context)};
+const buttons=node=>{if(!node||typeof node!=='object')return [];const out=node.type==='button'?[node]:[];const children=node.props?.children;for(const child of Array.isArray(children)?children:[children])out.push(...buttons(child));return out};
+const label=node=>node.props.children?.[1]?.props?.children;
+const find=(tree,text)=>buttons(tree).find(button=>label(button)===text);
+(async()=>{
+ let tree=render();assert(find(tree,'置頂'));assert(find(tree,'靜音'));assert(find(tree,'切換輸出裝置 ▸'));assert(find(tree,'忽略此應用程式'));assert(!find(tree,'音量設為 100'));
+ for(const button of buttons(tree))assert.equal(button.props.children[0].type.name,'FssContextIcon');
+ assert.equal(vm.runInContext("FssContextIcon({name:'refresh'}).type===gh",context),true);
+ await find(tree,'置頂').props.onClick();assert.deepEqual(store.pinned.a,['steam']);
+ tree=render();await find(tree,'取消置頂').props.onClick();assert.deepEqual(store.pinned.a,[]);
+ await find(render(),'靜音').props.onClick();assert.equal(muted,123);
+ tree=render('devices');assert(find(tree,'Current').props.disabled);await find(tree,'Other').props.onClick();assert.deepEqual(routed,[123,'b']);
+ await find(render(),'忽略此應用程式').props.onClick();assert.equal(store.ignored.steam,'Steam');
+ await find(render('ignored'),'恢復 Steam').props.onClick();assert.equal(store.ignored.steam,undefined);
+ assert(closed>=5&&refreshed>=5);
+ context.props.context.session={pid:0,name:'系統音效',fssOrderKey:'系統音效',deviceId:'a',muted:true};tree=render();assert(find(tree,'取消靜音'));assert(!find(tree,'忽略此應用程式'));assert(!find(tree,'切換輸出裝置 ▸'));
+ console.log('PASS: menu icons, standard Refresh icon, no volume-100 item, pin/unpin, PID-specific mute/route, ignore/restore, safe system-sounds menu');
+})().catch(error=>{console.error(error);process.exitCode=1});

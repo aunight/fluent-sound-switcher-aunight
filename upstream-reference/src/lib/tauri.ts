@@ -1,0 +1,279 @@
+import { invoke } from "@tauri-apps/api/core";
+
+import type { GamepadHotkeys, Hotkeys, MuteIndicator } from "./config";
+
+export type DeviceDirection = "output" | "input";
+
+/**
+ * `unplugged` is a device Windows still knows about but that is not connected
+ * (a sleeping wireless headset, a jack pulled out); `disabled` was switched off
+ * in the sound panel. Neither can be made the default or carry a volume.
+ */
+export type DeviceState = "active" | "unplugged" | "disabled";
+
+export interface AudioDevice {
+  id: string;
+  name: string;
+  direction: DeviceDirection;
+  isDefault: boolean;
+  state: DeviceState;
+  /** Whether the endpoint is fed by a paired Bluetooth device. */
+  isBluetooth: boolean;
+  /** The paired Bluetooth device's MAC ("AA:BB:CC:DD:EE:FF"), when Bluetooth. */
+  btMac: string | null;
+}
+
+/** A paired Bluetooth device that exposes an audio service. */
+export interface BtDevice {
+  name: string;
+  mac: string;
+  connected: boolean;
+  hasMicrophone: boolean;
+}
+
+/** Bluetooth state in one shot: no radio means the UI hides the feature. */
+export interface BluetoothSnapshot {
+  available: boolean;
+  devices: BtDevice[];
+}
+
+/** Lists every paired Bluetooth audio device with its connection state. */
+export function listBluetoothDevices(): Promise<BluetoothSnapshot> {
+  return invoke<BluetoothSnapshot>("list_bluetooth_devices");
+}
+
+/**
+ * Connects/disconnects the audio profiles of a paired Bluetooth device (by
+ * MAC). Some devices ignore the connect request — disconnect is reliable.
+ */
+export function setBluetoothConnect(mac: string, enabled: boolean): Promise<void> {
+  return invoke<void>("set_bluetooth_connect", { mac, enabled });
+}
+
+/** Lists active input/output devices with the current defaults flagged. */
+export function listAudioDevices(): Promise<AudioDevice[]> {
+  return invoke<AudioDevice[]>("list_audio_devices");
+}
+
+/**
+ * Switches the system default device (all roles) to the given endpoint id.
+ * `notify` fires a device-change notification (used by hotkey/flyout switches,
+ * not manual clicks in the main window).
+ */
+export function setDefaultAudioDevice(
+  deviceId: string,
+  notify = false,
+): Promise<void> {
+  return invoke<void>("set_default_audio_device", { deviceId, notify });
+}
+
+/** Triggers a sample notification so the user can preview their settings. */
+export function previewNotification(): Promise<void> {
+  return invoke<void>("preview_notification");
+}
+
+/** Whether the app is registered to start with Windows. */
+export function getAutostart(): Promise<boolean> {
+  return invoke<boolean>("get_autostart");
+}
+
+/** Enables/disables starting the app with Windows. */
+export function setAutostart(enabled: boolean): Promise<void> {
+  return invoke<void>("set_autostart", { enabled });
+}
+
+/** A device's volume as a 0-1 scalar. Omit `deviceId` for the current default. */
+export function getDeviceVolume(
+  direction: DeviceDirection,
+  deviceId?: string,
+): Promise<number> {
+  return invoke<number>("get_device_volume", { deviceId, direction });
+}
+
+/** Sets a device's volume from a 0-1 scalar. */
+export function setDeviceVolume(
+  direction: DeviceDirection,
+  level: number,
+  deviceId?: string,
+): Promise<void> {
+  return invoke<void>("set_device_volume", { deviceId, direction, level });
+}
+
+/** Toggles a device's mute; resolves to the new state. */
+export function toggleDeviceMute(
+  direction: DeviceDirection,
+  deviceId?: string,
+): Promise<boolean> {
+  return invoke<boolean>("toggle_device_mute", { deviceId, direction });
+}
+
+/** Reads a device's mute state. */
+export function getDeviceMuted(
+  direction: DeviceDirection,
+  deviceId?: string,
+): Promise<boolean> {
+  return invoke<boolean>("get_device_muted", { deviceId, direction });
+}
+
+/** Toggles the default output's mute; resolves to the new state. */
+export function toggleOutputMute(): Promise<boolean> {
+  return invoke<boolean>("toggle_output_mute");
+}
+
+/** Reads whether the default output is muted. */
+export function getOutputMuted(): Promise<boolean> {
+  return invoke<boolean>("get_output_muted");
+}
+
+/**
+ * The Windows accent colour and the shades Windows derives around it, darkest
+ * to lightest. Turned into a Fluent brand ramp by `theme/accentTheme.ts`.
+ */
+export interface AccentPalette {
+  dark3: string;
+  dark2: string;
+  dark1: string;
+  accent: string;
+  light1: string;
+  light2: string;
+  light3: string;
+}
+
+/** Switches between the app-drawn title bar and the system one, live. */
+export function setTitleBarStyle(style: "custom" | "native"): Promise<void> {
+  return invoke<void>("set_title_bar_style", { style });
+}
+
+/** Reads the accent palette; null when Windows will not report it. */
+export function getAccentPalette(): Promise<AccentPalette | null> {
+  return invoke<AccentPalette | null>("get_accent_palette");
+}
+
+/** State of the mute overlay, as the backend sees it. */
+export interface OverlayState {
+  kind: "mute" | "volume";
+  muted: boolean;
+  style: "full" | "icon";
+  level: number;
+}
+
+/**
+ * Asks for the overlay's current state. The overlay window's renderer is frozen
+ * while hidden and can miss the events pushed at it, so it reads the state
+ * directly on mount instead of assuming a default.
+ */
+export function getOverlayState(): Promise<OverlayState> {
+  return invoke<OverlayState>("get_overlay_state");
+}
+
+/** Payload of the `volume-changed` event. */
+export interface VolumeChanged {
+  level: number;
+  muted: boolean;
+  direction: DeviceDirection;
+}
+
+/** Toggles the default mic mute; resolves to the new muted state. */
+export function toggleMicMute(): Promise<boolean> {
+  return invoke<boolean>("toggle_mic_mute");
+}
+
+/** Reads whether the default microphone is muted. */
+export function getMicMuted(): Promise<boolean> {
+  return invoke<boolean>("get_mic_muted");
+}
+
+/**
+ * A binding the OS refused to register — nearly always because another app
+ * already owns the combination. Without this the UI would show a dead shortcut
+ * as if it worked.
+ */
+export interface HotkeyFailure {
+  /** The `hotkeys` config key, e.g. `cycleOutput`. */
+  action: keyof Hotkeys;
+  accelerator: string;
+  reason: string;
+}
+
+/**
+ * Re-registers the global shortcuts from the given bindings, resolving to the
+ * bindings that could *not* be registered (empty when all took).
+ */
+export function updateHotkeys(bindings: Hotkeys): Promise<HotkeyFailure[]> {
+  return invoke<HotkeyFailure[]>("update_hotkeys", { bindings });
+}
+
+/**
+ * Applies the gamepad-shortcut toggle live. The value is passed directly (not
+ * re-read from the store) to avoid racing its async write, same as hotkeys.
+ */
+export function updateGamepadHotkeys(gamepad: GamepadHotkeys): Promise<void> {
+  return invoke<void>("update_gamepad_hotkeys", { gamepad });
+}
+
+/** Re-applies the overlay with the given settings after a change. */
+export function refreshMuteIndicator(indicator: MuteIndicator): Promise<void> {
+  return invoke<void>("refresh_mute_indicator", { indicator });
+}
+
+/** Resizes the quick-switch flyout to fit its content (logical px height). */
+export function setFlyoutSize(height: number): Promise<void> {
+  return invoke<void>("set_flyout_size", { height });
+}
+
+/** Hides the quick-switch flyout. */
+export function closeFlyout(): Promise<void> {
+  return invoke<void>("close_flyout");
+}
+
+/** Shows/hides the output-device tray icon immediately. */
+export function setDeviceIcon(enabled: boolean): Promise<void> {
+  return invoke<void>("set_device_icon", { enabled });
+}
+
+/**
+ * Tells the backend the main window has painted, so it can be revealed. The
+ * window is created hidden so a login auto-start never flashes on screen.
+ */
+export function mainWindowReady(): Promise<void> {
+  return invoke<void>("main_window_ready");
+}
+
+/** Downloads and installs the pending update, then restarts the app. */
+export function installUpdate(): Promise<void> {
+  return invoke<void>("install_update");
+}
+
+/** The app's own version, from the backend's package info. */
+export function getAppVersion(): Promise<string> {
+  return invoke<string>("get_app_version");
+}
+
+/** Explicit update check; results (including "up to date") arrive as toasts. */
+export function checkUpdates(): Promise<void> {
+  return invoke<void>("check_updates");
+}
+
+/**
+ * Opens a URL in the user's default browser. Used by the support tab.
+ */
+export function openUrl(url: string): Promise<void> {
+  return invoke<void>("open_url", { url });
+}
+
+/**
+ * Switches the language of the strings the backend owns (tray menu,
+ * notification titles, updater messages) and rebuilds the tray.
+ */
+export function setLanguage(language: string): Promise<void> {
+  return invoke<void>("set_language", { language });
+}
+
+/**
+ * Opens the folder with the rotating log file in Explorer. Nothing the backend
+ * prints reaches a console in the packaged app, so this is how a user gets the
+ * log for a bug report.
+ */
+export function openLogFolder(): Promise<void> {
+  return invoke<void>("open_log_folder");
+}

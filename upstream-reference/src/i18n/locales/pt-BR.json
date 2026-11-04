@@ -1,0 +1,205 @@
+{
+  "common": {
+    "output": "Saída",
+    "input": "Entrada",
+    "active": "Ativo",
+    "refresh": "Atualizar",
+    "loading": "Carregando dispositivos...",
+    "noDevices": "Nenhum dispositivo encontrado",
+    "close": "Fechar"
+  },
+  "update": {
+    "available": "Versão {{version}} disponível.",
+    "install": "Atualizar agora",
+    "installing": "Atualizando...",
+    "later": "Depois"
+  },
+  "devices": {
+    "onlyFavorites": "Somente favoritos",
+    "addToCycle": "Adicionar à lista de ciclo",
+    "removeFromCycle": "Remover da lista de ciclo",
+    "states": {
+      "active": "",
+      "unplugged": "Desconectado",
+      "disabled": "Desativado"
+    }
+  },
+  "bluetooth": {
+    "device": "Dispositivo Bluetooth",
+    "connect": "Conectar dispositivo Bluetooth",
+    "disconnect": "Desconectar dispositivo Bluetooth",
+    "menu": "Dispositivos Bluetooth de áudio",
+    "noDevices": "Nenhum aparelho Bluetooth pareado",
+    "error": "Não foi possível conectar ou desconectar o dispositivo Bluetooth"
+  },
+  "flyout": {
+    "empty": "Marque dispositivos favoritos (★) na janela principal para trocar rápido por aqui.",
+    "mute": "Mutar microfone",
+    "unmute": "Desmutar microfone"
+  },
+  "hotkeys": {
+    "cycleOutput": "Ciclar saída",
+    "cycleInput": "Ciclar entrada",
+    "toggleMute": "Mutar/desmutar microfone",
+    "press": "Pressione as teclas...",
+    "none": "Nenhum",
+    "conflict": "Não foi possível registrar: {{list}}. Outro aplicativo provavelmente já usa esse atalho.",
+    "toggleOutputMute": "Mutar/desmutar saída",
+    "volumeUp": "Aumentar volume",
+    "volumeDown": "Diminuir volume",
+    "mediaKeysHint": "As teclas de mídia (volume, play) podem ser usadas direto, sem modificador — mas enquanto o app estiver aberto elas deixam de funcionar no Windows.",
+    "keyboard": "Teclado",
+    "gamepad": "Controle",
+    "gamepadEnable": "Atalhos de controle",
+    "gamepadHint": "Enquanto o app estiver aberto, segurar LB + RB no controle (XInput) e apertar o botão dispara a ação. O jogo também recebe esses botões — o app não os consome.",
+    "gamepadNoHome": "O botão Home é reservado pelo sistema e não pode ser usado; o modificador é LB + RB.",
+    "gamepadChord": "LB + RB + {{button}}",
+    "gamepadButtons": {
+      "a": "A",
+      "b": "B",
+      "x": "X",
+      "y": "Y",
+      "dpadUp": "D-pad ↑",
+      "dpadDown": "D-pad ↓"
+    }
+  },
+  "muteIndicator": {
+    "mode": "Quando mostrar",
+    "position": "Posição",
+    "style": "Estilo",
+    "styles": {
+      "full": "Ícone + texto",
+      "icon": "Apenas ícone"
+    },
+    "modes": {
+      "always": "Sempre",
+      "mutedOnly": "Só quando mudo",
+      "unmutedOnly": "Só quando ativo",
+      "hidden": "Nunca"
+    },
+    "muted": "Microfone mudo",
+    "live": "Microfone ativo"
+  },
+  "notifications": {
+    "banner": "Banner na tela",
+    "native": "Notificação do Windows",
+    "sound": "Tocar som",
+    "bannerPosition": "Posição do banner",
+    "test": "Testar notificação"
+  },
+  "autoSwitch": {
+    "enabled": "Trocar ao conectar",
+    "hint": "Quando um dispositivo de saída conecta (TV/monitor com áudio), assume como padrão.",
+    "mode": "Quais dispositivos",
+    "modes": {
+      "favoritesOnly": "Apenas favoritos",
+      "any": "Qualquer dispositivo"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "tabs": {
+      "general": "Geral",
+      "hotkeys": "Atalhos",
+      "volume": "Volume",
+      "mute": "Indicador",
+      "notifications": "Notificações",
+      "support": "Suporte"
+    },
+    "autostart": "Iniciar com o Windows",
+    "startMinimized": "Iniciar minimizado (na bandeja)",
+    "showDeviceIcon": "Ícone do dispositivo na bandeja",
+    "showDeviceIconHint": "Segundo ícone mostrando a saída atual (o microfone continua sendo o principal).",
+    "trayClickMic": "Ação do clique no ícone do microfone",
+    "trayClickDevice": "Ação do clique no ícone do dispositivo",
+    "trayClickHint": "O que um clique esquerdo no ícone da bandeja faz. O clique direito continua abrindo o menu.",
+    "trayClickDeviceDisabled": "Ative o ícone do dispositivo para configurá-lo.",
+    "trayClickActions": {
+      "flyout": "Abrir menu rápido de dispositivos",
+      "toggleMicMute": "Mutar/desmutar microfone",
+      "toggleOutputMute": "Mutar/desmutar saída",
+      "cycleOutput": "Alternar para o próximo dispositivo",
+      "openApp": "Abrir o Fluent Sound Switcher",
+      "soundPanel": "Abrir configurações de som do Windows"
+    },
+    "btAutoDisconnect": "Desconectar Bluetooth ao trocar",
+    "btAutoDisconnectHint": "Ao trocar de saída, desconecta o aparelho Bluetooth que deixou de ser o padrão (vale para qualquer troca: app, atalho, painel de som).",
+    "language": "Idioma",
+    "theme": "Tema",
+    "themes": {
+      "system": "Seguir o sistema",
+      "light": "Claro",
+      "dark": "Escuro"
+    },
+    "systemAccent": "Usar a cor do Windows",
+    "systemAccentHint": "Segue a cor de destaque escolhida nas configurações do Windows. Desligue para usar o azul padrão.",
+    "titleBar": "Barra de título",
+    "titleBarHint": "A barra do app combina com o restante da interface; a do sistema traz de volta o menu de layouts ao passar o mouse no maximizar.",
+    "titleBars": {
+      "custom": "Do aplicativo",
+      "native": "Do sistema"
+    }
+  },
+  "general": {
+    "logs": "Diagnóstico",
+    "logsHint": "Abre a pasta com o arquivo de log, útil para anexar a um relato de erro.",
+    "openLogs": "Abrir pasta de logs",
+    "monitor": "Monitor das janelas flutuantes",
+    "monitorHint": "Onde o indicador de mute, o aviso de troca e o menu rápido aparecem.",
+    "monitors": {
+      "cursor": "Onde está o cursor",
+      "primary": "Monitor principal",
+      "foreground": "Monitor da janela em foco"
+    }
+  },
+  "support": {
+    "intro": "Encontrou um bug? Tem uma sugestão? Abra uma issue no GitHub.",
+    "checkUpdates": "Verificar atualizações",
+    "checkUpdatesHint": "Consulta o GitHub Releases por uma versão mais nova; o resultado aparece como notificação.",
+    "checking": "Verificando...",
+    "reportBug": "Reportar problema",
+    "reportBugHint": "Relate bugs, sugira funcionalidades ou tire dúvidas sobre o app.",
+    "openIssues": "Abrir página de issues",
+    "version": "Versão {{version}}",
+    "versionLoading": "Versão...",
+    "license": "Licença: {{license}}",
+    "copyright": "Copyright © 2026 Gabriel Leocadio",
+    "viewLicense": "Ver licença"
+  },
+  "errors": {
+    "list": "Não foi possível listar os dispositivos de áudio.",
+    "switch": "Não foi possível trocar o dispositivo.",
+    "retry": "Tentar de novo"
+  },
+  "positions": {
+    "topCenter": "Topo (centro)",
+    "bottomCenter": "Base (centro)",
+    "topLeft": "Topo (esquerda)",
+    "topRight": "Topo (direita)",
+    "bottomLeft": "Base (esquerda)",
+    "bottomRight": "Base (direita)"
+  },
+  "volume": {
+    "label": "Volume de {{name}}",
+    "mute": "Mutar",
+    "unmute": "Desmutar",
+    "osd": "Mostrar volume na tela",
+    "osdHint": "Aparece ao usar os atalhos de volume, inclusive sobre jogos em tela cheia.",
+    "osdPosition": "Posição na tela",
+    "sliders": "Controle de volume na lista",
+    "slidersHint": "Adiciona um controle deslizante em cada dispositivo.",
+    "slidersInFlyout": "Controle de volume no menu rápido",
+    "slidersInFlyoutHint": "O menu da bandeja é compacto; deixe desligado se preferir a lista enxuta.",
+    "show": "Mostrar volume",
+    "hide": "Ocultar volume"
+  },
+  "app": {
+    "name": "Fluent Sound Switcher"
+  },
+  "titlebar": {
+    "minimize": "Minimizar",
+    "maximize": "Maximizar",
+    "restore": "Restaurar",
+    "close": "Fechar"
+  }
+}

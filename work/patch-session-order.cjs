@@ -1,0 +1,20 @@
+const fs=require('fs');
+module.exports=function(js){
+ if(js.includes('/* fss-session-order-v1 */'))return js;
+ const replace=(a,b)=>{if(js.split(a).length!==2)throw Error('Session/order signature mismatch: '+a.slice(0,100));js=js.replace(a,b)};
+ replace('async function oy(){','async function fssOriginalSessions(){');
+ replace('oy().then(M=>{H.isDragging()', 'oy().then(M=>{d("");H.isDragging()');
+ replace('function fssUseAppPeaks(',fs.readFileSync('work/fss-session-policy.js','utf8')+'\nfunction fssUseAppPeaks(');
+ replace('function MO(',fs.readFileSync('work/fss-app-context.js','utf8')+'\nfunction MO(');
+ replace('[B,_]=x.useState(null),T=x.useRef(l)','[B,_]=x.useState(null),[fssContext,setFssContext]=x.useState(null),T=x.useRef(l)');
+ replace('const f=()=>{var b,B;cancelAnimationFrame(d)', 'const f=()=>{var b,B;fssClearDropMark();cancelAnimationFrame(d)');
+ replace('h=b=>{var _;const B=yy(b.x,b.y);','h=b=>{var _;fssShowDropMark(b.x,b.y,b.sourceDevice,b.pid);const B=yy(b.x,b.y);');
+ replace('r.current(B.pid,_,B.name)', 'r.current(B.pid,_,B.name,{sourceDevice:B.sourceDevice,...fssDropDetails(b.clientX,b.clientY)})');
+ replace('n.current={pointerId:d.pointerId,pid:f,name:h,icon:m,','n.current={pointerId:d.pointerId,sourceDevice:d.currentTarget.dataset.appDevice,pid:f,name:h,icon:m,');
+ replace('H=jO((M,V)=>void F(M,V))','H=jO((M,V,name,drop)=>{if(drop?.sourceDevice===V){const rows=fssReorderSessions(T.current.filter(row=>row.deviceId===V),M,drop.targetPid,drop.before);fssOrders.value[V]=rows.map(row=>row.fssOrderKey);c(prev=>fssSortSessions(prev,fssOrders.value,fssOrders.pinned));fssSaveOrder(V,rows).catch(error=>d(String(error)));return}void F(M,V)})');
+ replace('"data-app-device":M.deviceId,onPointerDown:', '"data-app-device":M.deviceId,onContextMenu:event=>{event.preventDefault();event.stopPropagation();_(null);setFssContext({session:M,x:event.clientX,y:event.clientY})},onPointerDown:');
+ replace('onPointerEnter:j=>{if(M.pid!==0&&j.pointerType==="mouse")X(j.currentTarget)}','onPointerEnter:j=>{if(j.pointerType==="mouse")X(j.currentTarget)}');
+ replace('onFocus:j=>{if(M.pid!==0)X(j.currentTarget)}','onFocus:j=>X(j.currentTarget)');
+ replace('ref:S,"aria-label":i("mixer.title"),children:[','ref:S,"aria-label":i("mixer.title"),onContextMenu:event=>{event.preventDefault();_(null);setFssContext({session:null,x:event.clientX,y:event.clientY})},children:[fssContext&&z.jsx(FssAppContextMenu,{context:fssContext,devices:E,onClose:()=>setFssContext(null),onRefresh:R,onMute:session=>QD(session.pid,session.deviceId,!session.muted),onRoute:(session,device)=>F(session.pid,device)}),');
+ return js+'\n/* fss-session-order-v1 */';
+};
