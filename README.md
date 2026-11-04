@@ -1,6 +1,13 @@
 # 音效裝置切換器 — AuNight 修改版
 
-[English](README.en.md) · [下載安裝檔](https://github.com/aunight/fluent-sound-switcher-aunight/releases)
+<p align="center"><strong>繁體中文</strong> · <a href="README.en.md">English</a> · <a href="https://github.com/aunight/fluent-sound-switcher-aunight/releases">下載安裝檔</a></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-3ca63c?style=flat-square" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078d4?style=flat-square" alt="Windows 10 and 11">
+  <img src="https://img.shields.io/badge/runtime-WebView2-0078d4?style=flat-square" alt="Microsoft Edge WebView2 Runtime required">
+  <img src="https://img.shields.io/badge/.NET%20Framework-4-512bd4?style=flat-square" alt=".NET Framework 4 required">
+</p>
 
 音效裝置切換器是 [Fluent Sound Switcher](https://github.com/Leocadio94/fluent-sound-switcher) 的 Windows 修改版。原始開發者：Gabriel Leocadio；修改與客製化：AuNight。
 

@@ -1,6 +1,13 @@
 # Fluent Sound Switcher — AuNight Edition
 
-[繁體中文](README.md) · [Download](https://github.com/aunight/fluent-sound-switcher-aunight/releases)
+<p align="center"><a href="README.md">繁體中文</a> · <strong>English</strong> · <a href="https://github.com/aunight/fluent-sound-switcher-aunight/releases">Download</a></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-3ca63c?style=flat-square" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078d4?style=flat-square" alt="Windows 10 and 11">
+  <img src="https://img.shields.io/badge/runtime-WebView2-0078d4?style=flat-square" alt="Microsoft Edge WebView2 Runtime required">
+  <img src="https://img.shields.io/badge/.NET%20Framework-4-512bd4?style=flat-square" alt=".NET Framework 4 required">
+</p>
 
 A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94/fluent-sound-switcher). Original developer: Gabriel Leocadio. Modifications and customization: AuNight.
 
