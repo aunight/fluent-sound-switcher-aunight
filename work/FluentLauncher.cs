@@ -36,7 +36,7 @@ class FluentLauncher {
       try{process.WaitForInputIdle(3000);}catch{}
       for(int i=0;i<100;i++){
        if(process.HasExited)throw new InvalidOperationException("主程式啟動後已結束。");
-       IntPtr window=MainWindow(process.Id);if(window!=IntPtr.Zero){AllowSetForegroundWindow((uint)process.Id);ShowWindowAsync(window,IsIconic(window)?9:5);SetForegroundWindow(window);return 0;}Thread.Sleep(100);
+       IntPtr window=MainWindow(process.Id);if(window!=IntPtr.Zero){AllowSetForegroundWindow((uint)process.Id);ShowWindowAsync(window,IsIconic(window)?9:5);SetForegroundWindow(window);string controlDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"com.fluentsoundswitcher.app");Directory.CreateDirectory(controlDir);File.WriteAllText(Path.Combine(controlDir,"main-window-control.json"),"{\"action\":\"show\",\"requestId\":\""+DateTime.UtcNow.Ticks.ToString()+"\"}");Thread.Sleep(500);SetForegroundWindow(window);return 0;}Thread.Sleep(100);
       }
       throw new TimeoutException("找不到主視窗，請稍後再試。");
      }

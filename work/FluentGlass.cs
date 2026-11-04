@@ -22,6 +22,20 @@ class FluentGlass {
  [DllImport("user32.dll")] static extern int SetWindowCompositionAttribute(IntPtr w,ref CompositionData data);
  const int SystemBackdropType=38,CornerPreference=33,BorderColor=34,BackdropNone=1,CornerRound=2,AccentBlurBehind=3,ExTransparent=0x20;
  static readonly Dictionary<IntPtr,bool> Applied=new Dictionary<IntPtr,bool>();
+ [DllImport("user32.dll")] static extern bool IsZoomed(IntPtr window);
+ [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr window,out Rect rectangle);
+ [DllImport("user32.dll")] static extern IntPtr MonitorFromWindow(IntPtr window,uint flags);
+ [DllImport("user32.dll")] static extern bool GetMonitorInfo(IntPtr monitor,ref MonitorInfo info);
+ [StructLayout(LayoutKind.Sequential)] struct Rect {public int Left,Top,Right,Bottom;}
+ [StructLayout(LayoutKind.Sequential)] struct MonitorInfo {public int Size;public Rect Monitor,Work;public uint Flags;}
+ static void ConstrainMaximizedWindow(IntPtr window){
+  if(!IsZoomed(window))return;
+  var info=new MonitorInfo{Size=Marshal.SizeOf(typeof(MonitorInfo))};Rect current;
+  if(!GetMonitorInfo(MonitorFromWindow(window,2),ref info)||!GetWindowRect(window,out current))return;
+  var work=info.Work;
+  if(current.Left==work.Left&&current.Top==work.Top&&current.Right==work.Right&&current.Bottom==work.Bottom)return;
+  SetWindowPos(window,IntPtr.Zero,work.Left,work.Top,work.Right-work.Left,work.Bottom-work.Top,0x0014);
+ }
  static bool NativeTitleBar(){
   try{string path=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"com.fluentsoundswitcher.app","config.json");var settings=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Dictionary<string,object>>(File.ReadAllText(path));object style;return settings.TryGetValue("titleBarStyle",out style)&&Convert.ToString(style)=="native";}catch{return false;}
  }
@@ -45,6 +59,10 @@ class FluentGlass {
   }
   pids=found;pidsAt=Environment.TickCount;
  }
+ [DllImport("user32.dll")] static extern bool ShowWindowAsync(IntPtr window,int command);
+ public static void HideMain(){
+  RefreshPids();EnumWindows(delegate(IntPtr window,IntPtr unused){uint pid;GetWindowThreadProcessId(window,out pid);if(!pids.Contains(pid))return true;var text=new StringBuilder(256);GetWindowText(window,text,text.Capacity);string title=text.ToString();if(title=="音效裝置切換器"||title=="Fluent Sound Switcher")ShowWindowAsync(window,0);return true;},IntPtr.Zero);
+ }
  public static string Apply(bool force){
   if(force||pids.Count==0||unchecked(Environment.TickCount-pidsAt)>5000)RefreshPids();
   var output=new StringBuilder();var alive=new HashSet<IntPtr>();
@@ -58,11 +76,7 @@ class FluentGlass {
    long exStyle=GetWindowLongPtr(w,-20);
    bool main=t=="\u97F3\u6548\u88DD\u7F6E\u5207\u63DB\u5668"||t=="Fluent Sound Switcher";
    bool osd=!main&&(exStyle&ExTransparent)!=0;
-   if(main&&!NativeTitleBar()){
-    // Custom buttons own the caption area; leave no invisible native caption buttons above them.
-    long customStyle=style&~0x00CB0000L;
-    if(customStyle!=style){SetWindowLongPtr(w,-16,new IntPtr(customStyle));SetWindowPos(w,IntPtr.Zero,0,0,0,0,0x0037);}
-   }
+   if(main&&!NativeTitleBar())ConstrainMaximizedWindow(w);
    if(!main){
     var wta=new WTA_OPTIONS{dwFlags=0x0F,dwMask=0x0F};
     SetWindowThemeAttribute(w,1,ref wta,(uint)Marshal.SizeOf(wta));

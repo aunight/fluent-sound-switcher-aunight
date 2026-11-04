@@ -46,6 +46,9 @@ Source: "MicrosoftEdgeWebview2Setup.exe"; DestDir: "{tmp}"; Flags: deleteafterin
 Name: "{group}\Fluent Sound Switcher"; Filename: "{app}\FluentSoundSwitcher.exe"; IconFilename: "{app}\fluent-sound-switcher.exe"
 Name: "{userdesktop}\Fluent Sound Switcher"; Filename: "{app}\FluentSoundSwitcher.exe"; IconFilename: "{app}\fluent-sound-switcher.exe"; Tasks: desktopicon
 
+Name: "{userprograms}\音效裝置切換器"; Filename: "{app}\FluentSoundSwitcher.exe"; IconFilename: "{app}\fluent-sound-switcher.exe"
+Name: "{userdesktop}\音效裝置切換器"; Filename: "{app}\FluentSoundSwitcher.exe"; IconFilename: "{app}\fluent-sound-switcher.exe"; Check: LegacyDesktopShortcut
+
 [Registry]
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "Fluent Sound Switcher"; Flags: deletevalue
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Fluent Sound Switcher App Meter"; ValueData: """{app}\FluentAppMeter.exe"""; Tasks: autostart; Flags: uninsdeletevalue
@@ -56,6 +59,11 @@ Filename: "{tmp}\MicrosoftEdgeWebview2Setup.exe"; Parameters: "/silent /install"
 Filename: "{app}\FluentSoundSwitcher.exe"; Description: "啟動 Fluent Sound Switcher"; Flags: nowait postinstall skipifsilent
 
 [Code]
+function LegacyDesktopShortcut: Boolean;
+begin
+ Result := FileExists(ExpandConstant('{userdesktop}\音效裝置切換器.lnk'));
+end;
+
 var
  UpgradeDir: String;
  LegacyKeys: TStringList;

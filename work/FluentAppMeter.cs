@@ -246,6 +246,9 @@ class FluentAppMeter {
    var obj=Json.Deserialize<Dictionary<string,object>>(text);
    if(obj!=null){
     object act;
+    if(obj.TryGetValue("action",out act)&&Convert.ToString(act)=="hide_main"){
+     FluentGlass.HideMain();try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}return;
+    }
     if((obj.TryGetValue("action",out act)||obj.TryGetValue("command",out act))&&act!=null&&act.ToString()=="legacy_sound"){
      try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}
      try{Process.Start(new ProcessStartInfo("control.exe","mmsys.cpl"){UseShellExecute=true});}catch{}
