@@ -24,7 +24,11 @@ A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94
 ## Changes
 
 - Tray panel with enabled audio devices, master volume, app mixer, mute controls and audio-responsive meters.
-- Reorder apps within an output device; pin, mute, route, ignore and restore apps from the context menu.
+- Switch an app’s playback device by dragging it to another output device or selecting an output in its context menu. Drag to reorder apps within the same device.
+- Rename devices: customize the display names of input and output devices inside the app to identify speakers, headphones, microphones and virtual audio devices.
+- Tray app context menu: pin/unpin, mute/unmute, switch output device, ignore apps, restore ignored apps and refresh.
+- Dynamic volume meters: show each app’s actual audio level inside its volume slider, with a numeric volume value on the right and speaker icons reflecting volume and mute state.
+- Microphone controls: adjust input volume, toggle mute and display a microphone mute-status indicator.
 - Process-specific monitoring for LINE call/media helpers, hiding them after silence; fixes for missing system sounds and absent default devices.
 - Live Windows light/dark mode, optional Windows 7 glass, a Mica-inspired settings panel, background blur and transitions.
 - Traditional Chinese UI, startup and single-instance behavior, and an installer that upgrades registered existing installations. The support page links to this edition's GitHub Releases.
