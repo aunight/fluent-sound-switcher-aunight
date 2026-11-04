@@ -181,3 +181,12 @@
 .fss-app-context-artwork{width:19px;height:19px;object-fit:contain;border-radius:3px}
 
 [data-input-device] .fss-track-motion{background:rgba(255,255,255,.72)}
+
+/* Keep natural content height for sizing, but scroll once the native window reaches the work-area limit. */
+:root[data-window=flyout] #root,:root[data-window=flyout] #root>.fui-FluentProvider{height:100%;min-height:0}
+:root[data-window=flyout] .fss-flyout-glass{max-height:100vh!important;min-height:0;overflow:hidden}
+:root[data-window=flyout] .fss-flyout-glass>[data-route-scroll]{flex:1 1 auto;min-height:0;max-height:100vh;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain;touch-action:pan-y}
+:root[data-window=flyout] [data-route-scroll]>div{flex-shrink:0}
+:root[data-window=main] main{overscroll-behavior-y:contain;touch-action:pan-y;scrollbar-width:auto!important}
+:root[data-window=main] main>section{flex-shrink:0}
+:root[data-window=main] main::-webkit-scrollbar{display:block!important}

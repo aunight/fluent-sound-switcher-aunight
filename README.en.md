@@ -39,6 +39,8 @@ Select an output device in the main window or tray volume panel to change the Wi
 
 To send only one app to another device, drag it to the target output in the mixer, or right-click it and choose a destination under **Switch output device**. For example, play music through speakers while keeping calls on headphones. Apps can also be reordered by dragging within the same device.
 
+Lists scroll vertically when their contents exceed the window or available screen height. In an overflowing list, the wheel scrolls even over a volume row; hold **Alt while scrolling** to adjust that row’s volume, or drag the slider.
+
 ### Custom device names
 
 Right-click an input or output device in the main window and choose Rename to replace a technical hardware name with a useful label such as “Desk speakers” or “Call headset.” These are display aliases inside this app, helping identify devices in both the device list and quick panel.
