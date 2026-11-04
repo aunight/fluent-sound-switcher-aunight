@@ -23,7 +23,7 @@ A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94
 
 ## Changes
 
-- Tray panel with enabled audio devices, master volume, app mixer, mute controls and audio-responsive meters.
+- Tray panel with enabled devices and disabled favorites, master volume, app mixer, mute controls and audio-responsive meters.
 - Quick playback-device switching: change the default output, or route an app by dragging it to another output device or selecting an output in its context menu. Drag to reorder apps within the same device.
 - Rename devices: customize the display names of input and output devices inside the app to identify speakers, headphones, microphones and virtual audio devices.
 - Tray app context menu: pin/unpin, mute/unmute, switch output device, ignore apps, restore ignored apps and refresh.
@@ -40,6 +40,8 @@ Select an output device in the main window or tray volume panel to change the Wi
 To send only one app to another device, drag it to the target output in the mixer, or right-click it and choose a destination under **Switch output device**. For example, play music through speakers while keeping calls on headphones. Apps can also be reordered by dragging within the same device.
 
 Lists scroll vertically when their contents exceed the window or available screen height. In an overflowing list, the wheel scrolls even over a volume row; hold **Alt while scrolling** to adjust that row’s volume, or drag the slider.
+
+The tray panel keeps disabled favorite devices visible so they can be enabled again using the power button. Disabled devices that are not favorites stay hidden; disabling a device does not remove its favorite status.
 
 ### Custom device names
 

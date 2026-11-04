@@ -26,6 +26,7 @@ if(process.env.FSS_RELEASE_URL)js=require('./patch-release-links.cjs')(js);
 js=require('./patch-input-meter.cjs')(js);
 js=js.replace('className:e.scroll,"data-route-scroll":!0,children:', 'className:e.scroll,"data-route-scroll":!0,tabIndex:0,children:');
 js=require('./patch-scroll-overflow.cjs')(js);
+js=require('./patch-favorite-disabled.cjs')(js);
 new vm.Script(js);
 const asset=z.brotliCompressSync(Buffer.from(js),{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}});
 if(asset.length>capacity)throw Error('Asset too large');
