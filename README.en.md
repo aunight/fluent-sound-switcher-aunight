@@ -26,5 +26,9 @@ The current main program is built by patching `work/fluent-before-session-order-
 
 ## License and credits
 
-The original project is distributed under the [MIT License](LICENSE), copyright © 2026 Gabriel Leocadio. This edition is modified by AuNight. The full original license is included.
+The original project is distributed under the [MIT License](LICENSE), copyright © 2026 Gabriel Leocadio. The full original license is included.
+
+- Original developer: [Gabriel Leocadio (Leocadio94)](https://github.com/Leocadio94)
+- Original project: [Leocadio94/fluent-sound-switcher](https://github.com/Leocadio94/fluent-sound-switcher)
+- Modified edition: [AuNight](https://github.com/aunight)
 

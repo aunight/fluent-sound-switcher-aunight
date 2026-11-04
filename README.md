@@ -26,5 +26,9 @@
 
 ## 授權與署名
 
-原始專案依 [MIT License](LICENSE) 授權，原始著作權 © 2026 Gabriel Leocadio；本修改版由 AuNight 修改。隨附完整原始授權文字。
+原始專案依 [MIT License](LICENSE) 授權，原始著作權 © 2026 Gabriel Leocadio。隨附完整原始授權文字。
+
+- 原始開發者：[Gabriel Leocadio（Leocadio94）](https://github.com/Leocadio94)
+- 原始專案：[Leocadio94/fluent-sound-switcher](https://github.com/Leocadio94/fluent-sound-switcher)
+- 本修改版：[AuNight](https://github.com/aunight)
 
