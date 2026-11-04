@@ -4,6 +4,12 @@
 
 A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94/fluent-sound-switcher). Original developer: Gabriel Leocadio. Modifications and customization: AuNight.
 
+## Screenshots
+
+| Device controls | Settings |
+| --- | --- |
+| ![Input and output device volume controls](docs/screenshots/devices.png) | ![Settings with Windows theme and Windows 7 glass options](docs/screenshots/settings.png) |
+
 ## Changes
 
 - Tray panel with enabled audio devices, master volume, app mixer, mute controls and audio-responsive meters.

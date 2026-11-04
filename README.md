@@ -4,6 +4,12 @@
 
 音效裝置切換器是 [Fluent Sound Switcher](https://github.com/Leocadio94/fluent-sound-switcher) 的 Windows 修改版。原始開發者：Gabriel Leocadio；修改與客製化：AuNight。
 
+## 截圖
+
+| 裝置管理 | 設定介面 |
+| --- | --- |
+| ![輸入與輸出裝置音量控制](docs/screenshots/devices.png) | ![支援 Windows 主題與 Win7 玻璃質感的設定介面](docs/screenshots/settings.png) |
+
 ## 修改範圍
 
 - 右下角音量面板：顯示啟用的音訊裝置、主音量與應用程式混音器；可以靜音、調音量，並以實際聲音強度顯示音量動畫。
