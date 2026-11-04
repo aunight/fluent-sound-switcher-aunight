@@ -64,6 +64,8 @@ The bright meter inside each app’s volume slider follows its actual playback l
 
 Microphone sliders in the main window and tray panel show live input levels too: speak into the microphone to check for a signal. Each meter reads its own input device and resets on mute or stale data. Closing the panel releases capture after the monitoring lease expires; audio is not recorded or uploaded.
 
+<img src="docs/screenshots/microphone-meter.png" alt="Live microphone input meter (Traditional Chinese UI)" width="618">
+
 ## Install and update
 
 Download the Windows x64 installer from [Releases](https://github.com/aunight/fluent-sound-switcher-aunight/releases). It looks for registered existing installations and retains user preferences. Windows 10/11, Microsoft Edge WebView2 Runtime and .NET Framework 4 are required; process-specific LINE monitoring requires a Windows version supporting process loopback. When WebView2 is missing, the installer uses Microsoft's online bootstrapper.

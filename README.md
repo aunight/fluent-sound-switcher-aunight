@@ -64,6 +64,8 @@
 
 主視窗與右下角面板的麥克風滑桿同樣提供即時收音動態條，對著麥克風說話就能檢查輸入是否有訊號。它讀取各輸入裝置自身的電平，靜音或資料過期時會歸零。面板關閉後會在監測租期結束時釋放收音，音訊不會儲存或上傳。
 
+<img src="docs/screenshots/microphone-meter.png" alt="麥克風即時收音動態條示範" width="618">
+
 ## 安裝與更新
 
 從 [Releases](https://github.com/aunight/fluent-sound-switcher-aunight/releases) 下載 Windows x64 安裝檔。安裝程式會優先偵測已登錄的既有版本並沿用位置，保留使用者設定。需 Windows 10／11、Microsoft Edge WebView2 Runtime 和 .NET Framework 4；LINE 程序專屬監測需要支援 process loopback 的 Windows 版本。若缺少 WebView2，安裝程式會使用 Microsoft 的線上安裝程式。
