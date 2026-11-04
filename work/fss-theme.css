@@ -155,8 +155,10 @@
 :root[data-window=flyout],:root[data-window=flyout] body{overflow:hidden!important}
 
 /* Insert marker for app ordering inside one output device. */
-[data-app-pid].fss-order-before{box-shadow:inset 0 2px 0 var(--fss-slider-fill,var(--fss-accent,#0078d4))!important}
-[data-app-pid].fss-order-after{box-shadow:inset 0 -2px 0 var(--fss-slider-fill,var(--fss-accent,#0078d4))!important}
+[data-app-pid]:is(.fss-order-before,.fss-order-after){position:relative;box-shadow:none!important}
+[data-app-pid].fss-order-before::before,[data-app-pid].fss-order-after::after{content:"";position:absolute;left:0;right:0;height:2px;border-radius:0;background:var(--fss-slider-fill,var(--fss-accent,#0078d4));pointer-events:none}
+[data-app-pid].fss-order-before::before{top:0}
+[data-app-pid].fss-order-after::after{bottom:0}
 
 /* Per-app context menu, including ignored-app recovery from mixer background. */
 .fss-app-context{position:fixed;z-index:10000;min-width:190px;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px);overflow-y:auto;padding:6px;border:1px solid rgba(255,225,151,.4);border-radius:10px;background:linear-gradient(140deg,rgba(90,72,25,.96),rgba(44,36,18,.97));backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.15);color:#fff;text-align:left}
@@ -190,3 +192,8 @@
 :root[data-window=main] main{overscroll-behavior-y:contain;touch-action:pan-y;scrollbar-width:auto!important}
 :root[data-window=main] main>section{flex-shrink:0}
 :root[data-window=main] main::-webkit-scrollbar{display:block!important}
+
+/* App artwork has no hover tile, including system-theme overrides and parent-row hover. */
+:root:is([data-window=main],[data-window=flyout]) .fui-FluentProvider [data-app-pid]>button:first-child,
+:root:is([data-window=main],[data-window=flyout]) .fui-FluentProvider [data-app-pid]>button:first-child:is(:hover,:active){background:transparent!important;background-image:none!important;box-shadow:none!important;border-color:transparent!important}
+:root:is([data-window=main],[data-window=flyout]) .fui-FluentProvider [data-app-pid]:has(>button:first-child:hover){background:transparent!important;background-image:none!important}
