@@ -116,10 +116,19 @@ class FluentAppMeter {
  static long Now(){return (long)(DateTime.UtcNow-Epoch).TotalMilliseconds;}
  static void Check(int hr){Marshal.ThrowExceptionForHR(hr);}
  static void Release(object o){if(o!=null&&Marshal.IsComObject(o))Marshal.ReleaseComObject(o);}
- static void Clear(){lock(CommandLock){foreach(var e in Entries)Release(e.Session);Entries.Clear();}}
- static void Refresh(){lock(CommandLock){RefreshCore();}}
+ static readonly Dictionary<string,FluentInputPeak> InputMeters=new Dictionary<string,FluentInputPeak>();
+ static void Clear(bool inputs=true){lock(CommandLock){if(inputs){foreach(var meter in InputMeters.Values)meter.Dispose();InputMeters.Clear();}foreach(var e in Entries)Release(e.Session);Entries.Clear();}}
+ static void Refresh(bool inputs=true){lock(CommandLock){RefreshCore();if(inputs)RefreshInputs();}}
+ static void RefreshInputs(){
+  var active=new HashSet<string>();
+  IDevices enumerator=null;IDeviceCollection devices=null;
+  try{enumerator=(IDevices)new MMEnumerator();Check(enumerator.EnumAudioEndpoints(1,1,out devices));uint count;Check(devices.GetCount(out count));
+   for(uint i=0;i<count;i++){IDevice device=null;object meter=null;try{Check(devices.Item(i,out device));string id;Check(device.GetId(out id));if(!InputMeters.ContainsKey(id))InputMeters[id]=new FluentInputPeak(device);active.Add(id);}catch{}finally{Release(meter);Release(device);}}
+  }catch{}finally{Release(devices);Release(enumerator);}
+  foreach(var id in new List<string>(InputMeters.Keys))if(!active.Contains(id)){InputMeters[id].Dispose();InputMeters.Remove(id);}
+ }
  static void RefreshCore(){
-  Clear(); IDevices enumerator=null;IDeviceCollection devices=null;
+  Clear(false); IDevices enumerator=null;IDeviceCollection devices=null;
   try {
    enumerator=(IDevices)new MMEnumerator();Check(enumerator.EnumAudioEndpoints(0,1,out devices));uint count;Check(devices.GetCount(out count));
    for(uint d=0;d<count;d++){
@@ -182,7 +191,9 @@ class FluentAppMeter {
     };
    }
   }
-  return Json.Serialize(new Dictionary<string,object>{{"timestamp",Now()},{"peaks",peaks},{"systemSounds",systemSounds},{"sessionStatus",sessionStatus}});
+  var inputPeaks=new Dictionary<string,float>();
+  foreach(var input in InputMeters){float peak=0;try{peak=input.Value.ReadPeak();if(float.IsNaN(peak)||float.IsInfinity(peak))peak=0;}catch{peak=0;}inputPeaks[input.Key]=Math.Max(0,Math.Min(1,peak));}
+  return Json.Serialize(new Dictionary<string,object>{{"inputPeaks",inputPeaks},{"timestamp",Now()},{"peaks",peaks},{"systemSounds",systemSounds},{"sessionStatus",sessionStatus}});
  }
  static void SafeWrite(string path, string text){
   for(int attempt=0; attempt<5; attempt++){
@@ -326,7 +337,7 @@ class FluentAppMeter {
      actionWatcher.EnableRaisingEvents=true;
     }catch{}
    }
-   try{Refresh();SafeWrite(Output, Sample());}catch{}
+   try{Refresh(false);SafeWrite(Output, Sample());}catch{}
    try{while(true){long now=Now();
     if(!sample&&!once&&now>=glassAt){
      PublishWindowsTheme();
@@ -338,7 +349,7 @@ class FluentAppMeter {
     }
     if(once||sample)enabled=true;else if(now>=leaseAt){enabled=Enabled();leaseAt=now+500;}
     if(enabled){try{if(now>=refreshAt){Refresh();refreshAt=now+1500;}string json=Sample();if(once||sample)Console.WriteLine(json);else SafeWrite(Output, json);}catch(Exception e){File.WriteAllText(Error,DateTime.UtcNow.ToString("o")+" "+e.ToString());refreshAt=0;}}
-    else if(Entries.Count>0){Clear();StopProcessMeters();refreshAt=0;}
+    else if(Entries.Count>0||InputMeters.Count>0){Clear();StopProcessMeters();refreshAt=0;}
     if(once||(sample&&Now()>=end))break;Thread.Sleep(enabled?50:500);
    }}finally{Clear();StopProcessMeters();}
   }return 0;

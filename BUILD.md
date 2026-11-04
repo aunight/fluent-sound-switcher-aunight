@@ -21,3 +21,8 @@ The endpoint patch switches the inherited updater manifest URL to this repositor
 
 
 Upstream reference snapshot commit: 5452754a680d30548b5c5cf4df3acc169e466fe3. The legacy embedded native updater still performs its startup check; its fixed-length endpoint is redirected to this edition's Releases page, which does not serve a signed updater manifest. It does not install updates automatically.
+
+
+### Microphone input meter
+
+The audio helper includes `work/FluentInputPeak.cs` alongside `FluentAppMeter.cs`, `FluentProcessPeak.cs` and `FluentGlass.cs`. Compile with the .NET Framework C# compiler using `/main:FluentAppMeter`, `/target:winexe`, and references to `System.Web.Extensions.dll` and `System.Drawing.dll`. It opens shared-mode capture streams only while the visible UI renews the meter lease; samples are used locally for peak levels and are not recorded or uploaded. Run `node work/test-input-meter.cjs` for device isolation and lifecycle checks.

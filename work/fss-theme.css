@@ -179,3 +179,5 @@
 .fss-app-context button[aria-checked=true]::after{float:none;margin-left:auto}
 .fss-app-context-title{display:flex;align-items:center;gap:10px}
 .fss-app-context-artwork{width:19px;height:19px;object-fit:contain;border-radius:3px}
+
+[data-input-device] .fss-track-motion{background:rgba(255,255,255,.72)}

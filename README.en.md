@@ -24,14 +24,45 @@ A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94
 ## Changes
 
 - Tray panel with enabled audio devices, master volume, app mixer, mute controls and audio-responsive meters.
-- Switch an app’s playback device by dragging it to another output device or selecting an output in its context menu. Drag to reorder apps within the same device.
+- Quick playback-device switching: change the default output, or route an app by dragging it to another output device or selecting an output in its context menu. Drag to reorder apps within the same device.
 - Rename devices: customize the display names of input and output devices inside the app to identify speakers, headphones, microphones and virtual audio devices.
 - Tray app context menu: pin/unpin, mute/unmute, switch output device, ignore apps, restore ignored apps and refresh.
 - Dynamic volume meters: show each app’s actual audio level inside its volume slider, with a numeric volume value on the right and speaker icons reflecting volume and mute state.
-- Microphone controls: adjust input volume, toggle mute and display a microphone mute-status indicator.
+- Microphone controls and live input meters: adjust input volume, toggle mute and view each input device’s live level inside its slider in the main window and tray panel. Meters reset on mute or stale data; a mute-status indicator is also available.
 - Process-specific monitoring for LINE call/media helpers, hiding them after silence; fixes for missing system sounds and absent default devices.
 - Live Windows light/dark mode, optional Windows 7 glass, a Mica-inspired settings panel, background blur and transitions.
 - Traditional Chinese UI, startup and single-instance behavior, and an installer that upgrades registered existing installations. The support page links to this edition's GitHub Releases.
+
+### Quick playback-device switching
+
+Select an output device in the main window or tray volume panel to change the Windows default playback device, making it easy to switch between headphones, speakers and virtual audio devices. Mark frequently used devices as favorites in the main window for quick access, or configure a hotkey to cycle through them.
+
+To send only one app to another device, drag it to the target output in the mixer, or right-click it and choose a destination under **Switch output device**. For example, play music through speakers while keeping calls on headphones. Apps can also be reordered by dragging within the same device.
+
+### Custom device names
+
+Right-click an input or output device in the main window and choose Rename to replace a technical hardware name with a useful label such as “Desk speakers” or “Call headset.” These are display aliases inside this app, helping identify devices in both the device list and quick panel.
+
+### Common app controls
+
+Right-click an app in the tray mixer to open the menu below. Actions apply to the selected app. Ignoring an app hides it from the mixer, and it can be restored from the same menu.
+
+<img src="docs/screenshots/app-context-menu.png" alt="App controls context menu (Traditional Chinese UI)" width="440">
+
+| Action | What it does |
+| --- | --- |
+| Pin / Unpin | Place a frequently used app at the front of its playback-device list, or return it to normal ordering. |
+| Mute / Unmute | Toggle the selected app’s mute state to silence or restore its audio. |
+| Switch output device | Expand the available playback devices and route the selected app’s audio to a destination. |
+| Ignore this app | Hide an app that does not need mixer controls. This does not close or mute it. |
+| Ignored apps | List hidden apps; choose Restore to show one again. |
+| Refresh | Read the current audio sessions again and update the mixer list. |
+
+### Dynamic volume meters and microphone input
+
+The bright meter inside each app’s volume slider follows its actual playback level. The number on the right shows its configured volume, distinguishing volume settings from current audio activity. Speaker icons also reflect volume and mute state.
+
+Microphone sliders in the main window and tray panel show live input levels too: speak into the microphone to check for a signal. Each meter reads its own input device and resets on mute or stale data. Closing the panel releases capture after the monitoring lease expires; audio is not recorded or uploaded.
 
 ## Install and update
 

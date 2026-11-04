@@ -23,6 +23,7 @@ js=require('./patch-system-theme.cjs')(js);
 js=require('./patch-glass-option.cjs')(js);
 js=require('./patch-settings-design.cjs')(js);
 if(process.env.FSS_RELEASE_URL)js=require('./patch-release-links.cjs')(js);
+js=require('./patch-input-meter.cjs')(js);
 new vm.Script(js);
 const asset=z.brotliCompressSync(Buffer.from(js),{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}});
 if(asset.length>capacity)throw Error('Asset too large');

@@ -1,8 +1,8 @@
 [Setup]
 AppId=FluentSoundSwitcher.Custom
 AppName=Fluent Sound Switcher
-AppVersion=2026.11.04
-AppVerName=Fluent Sound Switcher 2026.11.04
+AppVersion=2026.11.04.3
+AppVerName=Fluent Sound Switcher 2026.11.04.3
 DefaultDirName={code:ExistingInstallDir}
 UsePreviousAppDir=no
 DefaultGroupName=Fluent Sound Switcher
