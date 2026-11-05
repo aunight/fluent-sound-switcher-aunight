@@ -26,3 +26,8 @@ Upstream reference snapshot commit: 5452754a680d30548b5c5cf4df3acc169e466fe3. Th
 ### Microphone input meter
 
 The audio helper includes `work/FluentInputPeak.cs` alongside `FluentAppMeter.cs`, `FluentProcessPeak.cs` and `FluentGlass.cs`. Compile with the .NET Framework C# compiler using `/main:FluentAppMeter`, `/target:winexe`, and references to `System.Web.Extensions.dll` and `System.Drawing.dll`. It opens shared-mode capture streams only while the visible UI renews the meter lease; samples are used locally for peak levels and are not recorded or uploaded. Run `node work/test-input-meter.cjs` for device isolation and lifecycle checks.
+
+
+### Packaged app icons
+
+Include `work/FluentAppIcons.cs` when compiling the audio helper, with a reference to `System.Xml.dll`. It resolves the executable entry in AppxManifest.xml and prefers the corresponding unplated PNG asset, then falls back to the EXE icon for unpackaged apps. `node work/test-app-icons.cjs` verifies that fresh, device-specific icon data reaches the mixer. `work/test-app-icons-native.cs` can verify the selected PNG against an installed package asset.

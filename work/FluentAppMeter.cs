@@ -155,7 +155,7 @@ class FluentAppMeter {
   foreach(uint pid in new List<uint>(ProcessFailures.Keys))if(!live.Contains(pid))ProcessFailures.Remove(pid);
  }
  static readonly Dictionary<string,string> ProcessIcons=new Dictionary<string,string>();
- static string ProcessIcon(string path){string cached;if(ProcessIcons.TryGetValue(path,out cached))return cached;string value=null;try{using(var icon=System.Drawing.Icon.ExtractAssociatedIcon(path))using(var bitmap=icon.ToBitmap())using(var stream=new MemoryStream()){bitmap.Save(stream,System.Drawing.Imaging.ImageFormat.Png);value="data:image/png;base64,"+Convert.ToBase64String(stream.ToArray());}}catch{}ProcessIcons[path]=value;return value;}
+ static string ProcessIcon(string path){string cached;if(ProcessIcons.TryGetValue(path,out cached))return cached;string value=FluentAppIcons.Read(path);if(value!=null)ProcessIcons[path]=value;return value;}
  static readonly Dictionary<uint,FluentProcessPeak> ProcessMeters=new Dictionary<uint,FluentProcessPeak>();
  static readonly Dictionary<uint,long> ProcessFailures=new Dictionary<uint,long>();
  static bool LineAux(string name){return string.Equals(name,"LineCall",StringComparison.OrdinalIgnoreCase)||string.Equals(name,"LineMediaPlayer",StringComparison.OrdinalIgnoreCase);}

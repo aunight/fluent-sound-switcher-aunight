@@ -14,7 +14,9 @@ function fssNormalizeSessions(list, telemetry, now = Date.now()) {
     if (auxiliary && !original.muted && !(status?.lastAudible > 0 &&
         now - status.lastAudible <= 4000 && now - status.lastAudible >= -1000)) continue;
     if (status?.state === 2 || status?.alive === false) continue;
-    const session = {...original, processName: status?.processName,
+    const session = {...original,
+      icon: typeof status?.icon === 'string' && status.icon.startsWith('data:image/png;base64,') ? status.icon : original.icon,
+      processName: status?.processName,
       appId: original.name || status?.processName || String(original.pid)};
     if (auxiliary) session.name = /^LineCall/i.test(process) ? 'LINE 通話' : 'LINE 媒體';
     const prior = unique.get(key);
