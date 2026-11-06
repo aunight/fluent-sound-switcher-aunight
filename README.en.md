@@ -126,3 +126,8 @@ Expand **Settings → Output/Input devices → ASIO driver detection** to see re
 ## Latest changes
 
 [Read the complete bilingual release notes](RELEASE_NOTES.md). Support provides update checking and installation; automatic updates are off by default.
+
+
+### 2026.11.06.9
+
+The ASIO section lets you select a driver and open its control panel. FL Studio ASIO uses an isolated STA thread; MiniFuse opens the installed MiniFuse Control Center. Driver errors follow the UI language, and device-settings borders are softer.

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -100,7 +100,7 @@ static class FluentDeviceSettings {
   foreach(int bits in new[]{16,24,32})foreach(int rate in new[]{44100,48000}){string value=bits+":"+rate;if(!result.Contains(value))result.Add(value);}return result;
  }
  public static object Execute(Dictionary<string,object> req){
-  string cmd=S(req,"command");if(cmd=="asio")return FluentAsioInfo.ReadIsolated();if(cmd=="list"){var result=new List<object>();foreach(var d in Devices())result.Add(State(d,false));return result;}
+  string cmd=S(req,"command");if(cmd=="asio")return FluentAsioInfo.ReadIsolated();if(cmd=="asio-panel"){FluentAsioInfo.LaunchPanel(S(req,"value"));return true;}if(cmd=="list"){var result=new List<object>();foreach(var d in Devices())result.Add(State(d,false));return result;}
   string id=S(req,"deviceId");var device=Find(id);if(cmd=="read")return State(device,true);
   if(S(device,"Device State")!="Active")throw new InvalidOperationException("Enable and connect this device first.");
   string val=S(req,"value"),expected=val,field=cmd;var before=State(device,true);

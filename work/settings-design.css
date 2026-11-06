@@ -56,3 +56,5 @@
 .fss-update-surface{width:620px;max-width:calc(100vw - 40px);border-radius:12px!important}.fss-update-notes{white-space:pre-wrap;overflow:auto;max-height:360px;line-height:1.75;font-size:14px;padding:18px;border-radius:8px;background:var(--fss-settings-card);border:1px solid var(--fss-settings-edge)}
 .fss-device-settings details{border-color:color-mix(in srgb,CanvasText 28%,transparent)}.fss-device-settings details>.fss-device-row{border-color:color-mix(in srgb,CanvasText 18%,transparent)}
 .fss-support-updates{display:flex;flex-direction:column;gap:12px}.fss-update-buttons{display:flex;gap:12px;flex-wrap:wrap}.fss-update-buttons>.fui-Button{min-width:132px}.fss-support-updates>p{margin:0;font-size:13px;line-height:1.5;min-height:20px}
+
+.fss-device-settings .fss-device-row{border-color:color-mix(in srgb,CanvasText 10%,transparent)!important}.fss-device-settings details{border-color:color-mix(in srgb,CanvasText 18%,transparent)!important}

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -322,6 +322,7 @@ class FluentAppMeter {
   }
  }
  [MTAThread] static int Main(string[] args){
+  if(args.Length==2&&args[0]=="--asio-panel"){int result=1;var thread=new Thread(delegate(){try{result=FluentAsioInfo.OpenPanel(Encoding.UTF8.GetString(Convert.FromBase64String(args[1])));}catch{result=1;}});thread.SetApartmentState(ApartmentState.STA);thread.Start();thread.Join();return result;}
   if(args.Length==2&&args[0]=="--asio-probe"){try{Directory.CreateDirectory(Dir);string token=Guid.Parse(args[1]).ToString("N");File.WriteAllText(Path.Combine(Dir,"asio-probe-"+token+".json"),Json.Serialize(FluentAsioInfo.Read()));return 0;}catch{return 1;}}
   if(args.Length>0&&args[0]=="--test-tone"){Console.WriteLine(Process.GetCurrentProcess().Id);Tone();return 0;}
   bool sample=args.Length>0&&args[0]=="--sample";bool once=args.Length>0&&args[0]=="--once";

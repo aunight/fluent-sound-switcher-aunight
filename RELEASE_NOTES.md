@@ -1,3 +1,23 @@
+2026.11.06.9
+
+繁體中文
+
+1. ASIO 驅動控制面板
+輸入／輸出設定的 ASIO 區塊新增驅動選擇與「開啟驅動控制面板」。FL Studio ASIO 使用獨立 STA 執行緒開啟面板；MiniFuse 則開啟已安裝的 MiniFuse Control Center。
+
+2. 錯誤訊息與介面
+驅動面板開啟失敗時顯示對應介面語言的提示，修正繁體中文介面冒出英文錯誤。調淡裝置設定卡片與 ASIO 區塊的邊框，減少過亮白線。
+
+English
+
+1. ASIO driver control panels
+Added driver selection and Open driver control panel to the ASIO section of input/output settings. FL Studio ASIO opens on an isolated STA thread; MiniFuse opens the installed MiniFuse Control Center.
+
+2. Errors and appearance
+Driver-panel failures now follow the interface language, including Traditional Chinese. Reduced the contrast of device-settings cards and ASIO borders.
+
+Previous changes / 先前修改
+
 繁體中文
 
 1. 裝置進階設定

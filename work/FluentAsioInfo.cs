@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,6 +17,27 @@ static class FluentAsioInfo {
    var last=matches[matches.Count-1];DateTime time;if(!DateTime.TryParse(last.Groups[1].Value,out time)||time<process.StartTime||last.Groups[3].Value!="Start")return null;
    string driver=last.Groups[2].Value;return loaded.Contains(driver)?driver:null;
   }catch{return null;}
+ }
+ [DllImport("ole32.dll")]static extern int CoCreateInstance(ref Guid clsid,IntPtr outer,int context,ref Guid iid,out IntPtr result);
+ [DllImport("ole32.dll")]static extern int CoInitializeEx(IntPtr reserved,int mode);
+ [DllImport("ole32.dll")]static extern void CoUninitialize();
+ [DllImport("user32.dll")]static extern IntPtr GetDesktopWindow();
+ [UnmanagedFunctionPointer(CallingConvention.StdCall)]delegate int AsioInit(IntPtr self,IntPtr window);
+ [UnmanagedFunctionPointer(CallingConvention.StdCall)]delegate int AsioPanel(IntPtr self);
+ public static int OpenPanel(string name){
+  Guid id=Guid.Empty;using(var hive=RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,RegistryView.Registry64))using(var root=hive.OpenSubKey(@"SOFTWARE\ASIO"))using(var key=root==null?null:root.OpenSubKey(name))if(key==null||!Guid.TryParse(Convert.ToString(key.GetValue("CLSID")),out id))return 2;
+  int com=CoInitializeEx(IntPtr.Zero,2);IntPtr ptr=IntPtr.Zero;try{Guid iid=id;int hr=CoCreateInstance(ref id,IntPtr.Zero,1,ref iid,out ptr);if(hr<0)return hr;if(ptr==IntPtr.Zero)return 3;IntPtr table=Marshal.ReadIntPtr(ptr);var init=(AsioInit)Marshal.GetDelegateForFunctionPointer(Marshal.ReadIntPtr(table,3*IntPtr.Size),typeof(AsioInit));if(init(ptr,GetDesktopWindow())==0)return 4;var panel=(AsioPanel)Marshal.GetDelegateForFunctionPointer(Marshal.ReadIntPtr(table,21*IntPtr.Size),typeof(AsioPanel));int result=panel(ptr);return result==0||result==0x3f4847a0?0:result;}catch{return 6;}finally{if(ptr!=IntPtr.Zero)Marshal.Release(ptr);if(com>=0)CoUninitialize();}
+ }
+ public static void LaunchPanel(string name){
+  if(name=="MiniFuse ASIO Driver"){
+   string shortcut=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms),"Arturia","MiniFuse Control Center","MiniFuse Control Center.lnk");
+   if(File.Exists(shortcut)){Process.Start(new ProcessStartInfo(shortcut){UseShellExecute=true});return;}
+  }
+  if(string.IsNullOrWhiteSpace(name)||name.IndexOfAny(new[]{'\\','/','"','\r','\n'})>=0)throw new ArgumentException("Invalid ASIO driver name.");
+  using(var hive=RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,RegistryView.Registry64))using(var key=hive.OpenSubKey(@"SOFTWARE\ASIO\"+name))if(key==null)throw new InvalidOperationException("ASIO driver is no longer installed.");
+  using(var child=Process.Start(new ProcessStartInfo(Process.GetCurrentProcess().MainModule.FileName,"--asio-panel "+Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(name))){UseShellExecute=false,CreateNoWindow=true})){
+   if(child.WaitForExit(1500)&&child.ExitCode!=0)throw new InvalidOperationException("Unable to open the driver panel; the driver may be unavailable or in use.");
+  }
  }
  static int scanBusy;static long nextScan;
  public static void Poll(){
