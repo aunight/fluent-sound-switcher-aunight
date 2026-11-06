@@ -19,7 +19,11 @@
 
 | 快速音量面板 | 快速設定 |
 | --- | --- |
-| ![快速音量面板與應用程式混音器](docs/screenshots/volume-mixer.png) | ![系統匣快速設定選單](docs/screenshots/quick-settings.png) |
+| ![快速音量面板與應用程式混音器](docs/screenshots/volume-mixer-asio.png) | ![系統匣快速設定選單](docs/screenshots/quick-settings.png) |
+
+新版輸出裝置設定與 ASIO 驅動資訊：
+
+<img src="docs/screenshots/output-settings-asio.png" alt="新版輸出裝置設定及 ASIO 驅動偵測" width="960">
 
 ## 修改範圍
 
@@ -75,6 +79,12 @@
 從 [Releases](https://github.com/aunight/fluent-sound-switcher-aunight/releases) 下載 Windows x64 安裝檔。安裝程式會優先偵測已登錄的既有版本並沿用位置，保留使用者設定。需 Windows 10／11、Microsoft Edge WebView2 Runtime 和 .NET Framework 4；LINE 程序專屬監測需要支援 process loopback 的 Windows 版本。若缺少 WebView2，安裝程式會使用 Microsoft 的線上安裝程式。
 
 此修改版目前沒有程式碼簽章，Windows 可能顯示未知發行者或 SmartScreen 提示。更新請至 Releases 下載新版安裝檔。
+
+### 舊版如何升級
+
+- 先前公開的 v2026.11.06 與更早的 AuNight 版本沒有此版的 GitHub 更新通知及一鍵安裝功能；請從 Releases 下載最新版 x64 安裝檔，可直接覆蓋升級並保留設定，不必逐版安裝。
+- 已具備更新檢查功能的版本會在啟動及每 6 小時檢查新版；略過版本、稍後提醒或無網路時不會立即提示。
+- 已具備「更新」按鈕的版本可下載、驗證 SHA-256 並安裝最新版；自動更新預設關閉，可在支援頁開啟。僅有通知功能的舊測試版仍需手動下載。
 
 ## 原始碼與建置限制
 

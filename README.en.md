@@ -19,7 +19,11 @@ A Windows customization of [Fluent Sound Switcher](https://github.com/Leocadio94
 
 | Quick volume panel | Quick settings |
 | --- | --- |
-| ![Quick volume panel and app mixer](docs/screenshots/volume-mixer.png) | ![System tray quick settings menu](docs/screenshots/quick-settings.png) |
+| ![Quick volume panel and app mixer](docs/screenshots/volume-mixer-asio.png) | ![System tray quick settings menu](docs/screenshots/quick-settings.png) |
+
+Updated output-device settings and ASIO driver information:
+
+<img src="docs/screenshots/output-settings-asio.png" alt="Output-device settings and ASIO driver detection (Traditional Chinese UI)" width="960">
 
 ## Changes
 
@@ -76,6 +80,12 @@ Download the Windows x64 installer from [Releases](https://github.com/aunight/fl
 
 This edition is unsigned; Windows may show an unknown-publisher or SmartScreen warning. Download new installers from Releases.
 
+### Upgrading older versions
+
+- Previously published v2026.11.06 and earlier AuNight builds lack this edition's GitHub update notifications and one-click installation. Download the latest x64 installer from Releases and upgrade directly, retaining settings; intermediate versions are unnecessary.
+- Builds with update checking check at startup and every six hours. Skipped versions, postponed reminders or an unavailable network can delay notifications.
+- Builds with an Update button can download, verify SHA-256 and install the latest release. Automatic updates are off by default and can be enabled in Support. Older notification-only test builds still require a manual download.
+
 ## Source and build limitations
 
 `work/` contains the UI patches, C# audio helper, launcher, installer and build scripts. `upstream-reference/` is a snapshot of the original upstream source for reference; it is not the complete source of the customized main executable.
@@ -110,7 +120,7 @@ Expand **Settings → Output/Input devices → ASIO driver detection** to see re
 - System Sounds stays at the bottom of each device list when its native session expires.
 - Ableton native-ASIO meters read the application master output through the existing local Live MCP bridge. Device-wide audio is not substituted for per-app levels. Unmodified standalone SonoBus still requires an independent meter source.
 - ASIO rows appear last with shorter sampling and display intervals.
-- New GitHub Release notifications include release notes, Later and Skip options. No automatic installation. Older builds must first be updated manually to a build with this notifier.
+- New GitHub Release notifications include release notes, Later and Skip options. Automatic updates are optional and off by default. Older builds without the notifier require a manual upgrade first.
 
 
 ## Latest changes
