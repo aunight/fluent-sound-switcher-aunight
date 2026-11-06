@@ -3,3 +3,7 @@ work/inno-compiler/
 work/MicrosoftEdgeWebview2Setup.exe
 work/current-ui-patched.js
 *.log
+work/build-tools/node_modules/
+work/*-probe.json
+work/soundvolumeview.zip
+third-party/SoundVolumeView/*.cfg

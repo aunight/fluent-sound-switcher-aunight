@@ -1,0 +1,1 @@
+using System;class AsioPeakProbe{static void Main(){for(int i=0;i<5;i++){try{Console.WriteLine(FluentAbletonMeter.ReadMaster().ToString("F4",System.Globalization.CultureInfo.InvariantCulture));}catch(Exception e){Console.WriteLine(e.GetType().FullName+": "+e.Message);break;}System.Threading.Thread.Sleep(250);}}}

@@ -200,3 +200,4 @@
 
 [data-fss-caption-controls],[data-fss-caption-controls]>button{-webkit-app-region:no-drag!important;pointer-events:auto;position:relative;z-index:5}
 [data-fss-caption-controls]>button{flex:0 0 46px;box-sizing:border-box}
+[data-output-device] .fss-track-motion{background:rgba(255,255,255,.72)}

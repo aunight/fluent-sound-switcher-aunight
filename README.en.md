@@ -90,3 +90,29 @@ The original project is distributed under the [MIT License](LICENSE), copyright 
 - Original project: [Leocadio94/fluent-sound-switcher](https://github.com/Leocadio94/fluent-sound-switcher)
 - Modified edition: [AuNight](https://github.com/aunight)
 
+
+### Advanced device settings
+
+Select an input or output under **Settings → Audio devices** to configure the default sample rate and bit depth, exclusive access and priority, driver-exposed enhancements, and Windows Sonic for output devices. The page uses Fluent dropdowns and switches with section icons.
+
+44.1/48 kHz are common choices; additional formats are queried from the driver. Applying a format depends on the device, driver and current usage. The previous format is saved and restoration is attempted on failure. Changes are read back from Windows before reporting success. Unsupported enhancements are not presented as working controls. Spatial sound currently offers Off and Windows Sonic and preserves display of another currently selected format; Dolby/DTS licensing is not supplied.
+
+These Windows settings do not control native ASIO application volume. For SonoBus using MiniFuse ASIO, use SonoBus's Output Level. Advanced configuration uses the bundled SoundVolumeView freeware component; see [third-party notices](THIRD_PARTY_NOTICES.md).
+
+### ASIO detection
+
+Expand **Settings → Output/Input devices → ASIO driver detection** to see registered drivers, driver modules loaded by applications, and Windows volume-session availability. Loading a DLL does not establish active use: unverified drivers are labeled accordingly. Drivers loaded by DAWs and SonoBus are listed. Application UI trees are not scanned, and saved configuration files are not treated as active-driver evidence. Applications without Windows sessions are directed to their own or driver volume controls. Protected or inaccessible processes may not be listed.
+
+### 2026.11.06.3
+
+- Wider device settings, compact single-line dropdowns, and Windows-style format labels shown once.
+- Input/output pages retain cached data; refresh occurs manually or after device changes.
+- System Sounds stays at the bottom of each device list when its native session expires.
+- Ableton native-ASIO meters read the application master output through the existing local Live MCP bridge. Device-wide audio is not substituted for per-app levels. Unmodified standalone SonoBus still requires an independent meter source.
+- ASIO rows appear last with shorter sampling and display intervals.
+- New GitHub Release notifications include release notes, Later and Skip options. No automatic installation. Older builds must first be updated manually to a build with this notifier.
+
+
+## Latest changes
+
+[Read the complete bilingual release notes](RELEASE_NOTES.md). Support provides update checking and installation; automatic updates are off by default.

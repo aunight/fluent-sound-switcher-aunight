@@ -1,8 +1,8 @@
-[Setup]
+﻿[Setup]
 AppId=FluentSoundSwitcher.Custom
 AppName=Fluent Sound Switcher
-AppVersion=2026.11.06
-AppVerName=Fluent Sound Switcher 2026.11.06
+AppVersion=2026.11.06.6
+AppVerName=Fluent Sound Switcher 2026.11.06.6
 DefaultDirName={code:ExistingInstallDir}
 UsePreviousAppDir=no
 DefaultGroupName=Fluent Sound Switcher
@@ -12,7 +12,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 OutputDir=..\outputs
-OutputBaseFilename=FluentSoundSwitcher-2026.11.06-Setup-x64
+OutputBaseFilename=FluentSoundSwitcher-2026.11.06.6-Setup-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -36,10 +36,13 @@ Name: "autostart"; Description: "登入 Windows 時啟動"
 Name: "desktopicon"; Description: "建立桌面捷徑"; Flags: unchecked
 
 [Files]
+Source: "..\RELEASE_NOTES.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\outputs\release-20261104\FluentSoundSwitcher.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\outputs\release-20261104\fluent-sound-switcher.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\outputs\release-20261104\FluentAppMeter.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\outputs\release-20261104\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\third-party\SoundVolumeView\*"; DestDir: "{app}\third-party\SoundVolumeView"; Excludes: "*.cfg"; Flags: ignoreversion
+Source: "..\THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "MicrosoftEdgeWebview2Setup.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: NeedsWebView
 
 [Icons]
@@ -57,8 +60,14 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 [Run]
 Filename: "{tmp}\MicrosoftEdgeWebview2Setup.exe"; Parameters: "/silent /install"; StatusMsg: "正在安裝 Microsoft Edge WebView2…"; Flags: waituntilterminated; Check: NeedsWebView
 Filename: "{app}\FluentSoundSwitcher.exe"; Description: "啟動 Fluent Sound Switcher"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\FluentSoundSwitcher.exe"; Flags: nowait; Check: IsAutoUpdate
 
 [Code]
+function IsAutoUpdate: Boolean;
+begin
+ Result := ExpandConstant('{param:FSSAUTOUPDATE|0}') = '1';
+end;
+
 function LegacyDesktopShortcut: Boolean;
 begin
  Result := FileExists(ExpandConstant('{userdesktop}\音效裝置切換器.lnk'));

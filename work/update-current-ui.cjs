@@ -7,7 +7,8 @@ const prefix='fssStyle.textContent=',suffix=';document.head.appendChild(fssStyle
 const p=js.lastIndexOf(prefix),q=js.indexOf(suffix,p);
 if(p<0||q<0)throw Error('Current theme injection missing');
 JSON.parse(js.slice(p+prefix.length,q));
-const css=['fss-theme.css','system-theme.css','win7-theme.css','settings-design.css'].map(f=>fs.readFileSync('work/'+f,'utf8')).join('\n').replace(/\/\*[\s\S]*?\*\//g,'').replace(/\n\s*/g,'\n');
+const rawCss=['fss-theme.css','system-theme.css','win7-theme.css','settings-design.css'].map(f=>fs.readFileSync('work/'+f,'utf8')).join('\n');
+const cssResult=new (require('./build-tools/node_modules/clean-css'))({level:{1:{},2:{restructureRules:false,mergeSemantically:false}}}).minify(rawCss);if(cssResult.errors.length)throw Error(cssResult.errors.join('; '));const css=cssResult.styles;
 js=js.slice(0,p+prefix.length)+JSON.stringify(css)+js.slice(q);
 for(const [diameter,radius] of [[13,6.5],[20,10],[16,8]]){
  if(js.includes('(lit*'+diameter+')'))js=js.replace('(lit*'+diameter+')','(lit*14)').replace('(Math.min(1,lit*40)*'+radius+')','(Math.min(1,lit*40)*7)');
@@ -28,9 +29,19 @@ js=js.replace('className:e.scroll,"data-route-scroll":!0,children:', 'className:
 js=require('./patch-scroll-overflow.cjs')(js);
 js=require('./patch-favorite-disabled.cjs')(js);
 js=require('./patch-caption-controls.cjs')(js);
+js=require('./patch-device-settings.cjs')(js);
+js=require('./patch-settings-icons.cjs')(js);
+js=require('./patch-settings-layout.cjs')(js);
+js=require('./patch-asio-flyout.cjs')(js);
+js=require('./patch-asio-rows.cjs')(js);
+js=require('./patch-update-notice.cjs')(js);
+js=require('./patch-update-controls.cjs')(js);
+new vm.Script(js);
+// Minify CSS and compress JavaScript while preserving top-level names.
+js=require('./build-tools/node_modules/terser').minify_sync(js,{compress:{defaults:true,passes:2},mangle:{toplevel:false,keep_fnames:true},format:{comments:false}}).code;
 new vm.Script(js);
 const asset=z.brotliCompressSync(Buffer.from(js),{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}});
-if(asset.length>capacity)throw Error('Asset too large');
+if(asset.length>capacity)throw Error('Asset too large: '+asset.length);
 const out=Buffer.from(b);out.fill(0,start,start+capacity);asset.copy(out,start);
 if(z.brotliDecompressSync(out.subarray(start)).toString('utf8')!==js)throw Error('Roundtrip failed');
 if(!b.subarray(0,start).equals(out.subarray(0,start))||!b.subarray(start+capacity).equals(out.subarray(start+capacity)))throw Error('Native bytes changed');

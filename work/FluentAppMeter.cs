@@ -111,13 +111,15 @@ class FluentAppMeter {
    }
   }catch{}
  }
- static readonly List<MeterEntry> Entries=new List<MeterEntry>();
+ static readonly List<MeterEntry> Entries=new List<MeterEntry>(); public static bool HasWindowsSession(int pid){lock(CommandLock){RefreshCore();return Entries.Exists(e=>e.Pid==pid);}}
  static readonly DateTime Epoch=new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
  static long Now(){return (long)(DateTime.UtcNow-Epoch).TotalMilliseconds;}
  static void Check(int hr){Marshal.ThrowExceptionForHR(hr);}
  static void Release(object o){if(o!=null&&Marshal.IsComObject(o))Marshal.ReleaseComObject(o);}
  static readonly Dictionary<string,FluentInputPeak> InputMeters=new Dictionary<string,FluentInputPeak>();
- static void Clear(bool inputs=true){lock(CommandLock){if(inputs){foreach(var meter in InputMeters.Values)meter.Dispose();InputMeters.Clear();}foreach(var e in Entries)Release(e.Session);Entries.Clear();}}
+ static readonly Dictionary<string,IPeak> OutputMeters=new Dictionary<string,IPeak>();
+ static readonly Dictionary<string,object> LastSystemSounds=new Dictionary<string,object>();
+ static void Clear(bool inputs=true){lock(CommandLock){if(inputs){foreach(var meter in InputMeters.Values)meter.Dispose();InputMeters.Clear();}foreach(var meter in OutputMeters.Values)Release(meter);OutputMeters.Clear();foreach(var e in Entries)Release(e.Session);Entries.Clear();}}
  static void Refresh(bool inputs=true){lock(CommandLock){RefreshCore();if(inputs)RefreshInputs();}}
  static void RefreshInputs(){
   var active=new HashSet<string>();
@@ -134,7 +136,7 @@ class FluentAppMeter {
    for(uint d=0;d<count;d++){
     IDevice device=null;object managerObject=null;ISessions sessions=null;
     try{
-     Check(devices.Item(d,out device));string id;Check(device.GetId(out id));Guid iid=typeof(ISessionManager).GUID;
+     Check(devices.Item(d,out device));string id;Check(device.GetId(out id));Guid peakIid=typeof(IPeak).GUID;object endpointMeter=null;try{if(device.Activate(ref peakIid,23,IntPtr.Zero,out endpointMeter)==0){IPeak old;if(OutputMeters.TryGetValue(id,out old))Release(old);OutputMeters[id]=(IPeak)endpointMeter;endpointMeter=null;}}catch{}finally{Release(endpointMeter);}Guid iid=typeof(ISessionManager).GUID;
      Check(device.Activate(ref iid,23,IntPtr.Zero,out managerObject));Check(((ISessionManager)managerObject).GetSessionEnumerator(out sessions));int sessionCount;Check(sessions.GetCount(out sessionCount));
      for(int j=0;j<sessionCount;j++){
       object session=null;
@@ -165,7 +167,7 @@ class FluentAppMeter {
  static string Sample(){lock(CommandLock){return SampleCore();}}
  static string SampleCore(){
   var peaks=new Dictionary<string,float>();
-  var systemSounds=new Dictionary<string,object>();
+  var systemSounds=new Dictionary<string,object>();foreach(var device in OutputMeters.Keys){object prior;if(LastSystemSounds.TryGetValue(device,out prior))systemSounds[device]=prior;}
   var sessionStatus=new Dictionary<string,object>();
   long sampledAt=Now();
   foreach(var e in Entries){
@@ -189,11 +191,13 @@ class FluentAppMeter {
     systemSounds[devId]=new Dictionary<string,object>{
      {"pid",0},{"name","\u7CFB\u7D71\u97F3\u6548"},{"deviceId",devId},{"volume",v},{"muted",m},{"active",true},{"icon",SysIcon}
     };
+    LastSystemSounds[devId]=systemSounds[devId];
    }
   }
   var inputPeaks=new Dictionary<string,float>();
   foreach(var input in InputMeters){float peak=0;try{peak=input.Value.ReadPeak();if(float.IsNaN(peak)||float.IsInfinity(peak))peak=0;}catch{peak=0;}inputPeaks[input.Key]=Math.Max(0,Math.Min(1,peak));}
-  return Json.Serialize(new Dictionary<string,object>{{"inputPeaks",inputPeaks},{"timestamp",Now()},{"peaks",peaks},{"systemSounds",systemSounds},{"sessionStatus",sessionStatus}});
+  var outputPeaks=new Dictionary<string,float>();foreach(var output in OutputMeters){float peak=0;try{output.Value.GetPeakValue(out peak);}catch{}outputPeaks[output.Key]=float.IsNaN(peak)||float.IsInfinity(peak)?0:Math.Max(0,Math.Min(1,peak));}
+  return Json.Serialize(new Dictionary<string,object>{{"asioPeaks",FluentAbletonMeter.Snapshot()},{"outputPeaks",outputPeaks},{"inputPeaks",inputPeaks},{"timestamp",Now()},{"peaks",peaks},{"systemSounds",systemSounds},{"sessionStatus",sessionStatus}});
  }
  static void SafeWrite(string path, string text){
   for(int attempt=0; attempt<5; attempt++){
@@ -246,6 +250,10 @@ class FluentAppMeter {
    var obj=Json.Deserialize<Dictionary<string,object>>(text);
    if(obj!=null){
     object act;
+    if(obj.TryGetValue("action",out act)&&act!=null&&(act.ToString()=="update_check"||act.ToString()=="update_install"||act.ToString()=="auto_update_changed")){
+     string action=act.ToString();try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}
+     if(action=="update_install")FluentReleaseCheck.InstallNow();else if(action=="auto_update_changed")FluentReleaseCheck.AutoChanged();else FluentReleaseCheck.CheckNow();return;
+    }
     if(obj.TryGetValue("action",out act)&&Convert.ToString(act)=="show_main"){
      FluentGlass.ShowMain();try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}return;
     }
@@ -314,6 +322,7 @@ class FluentAppMeter {
   }
  }
  [MTAThread] static int Main(string[] args){
+  if(args.Length==2&&args[0]=="--asio-probe"){try{Directory.CreateDirectory(Dir);string token=Guid.Parse(args[1]).ToString("N");File.WriteAllText(Path.Combine(Dir,"asio-probe-"+token+".json"),Json.Serialize(FluentAsioInfo.Read()));return 0;}catch{return 1;}}
   if(args.Length>0&&args[0]=="--test-tone"){Console.WriteLine(Process.GetCurrentProcess().Id);Tone();return 0;}
   bool sample=args.Length>0&&args[0]=="--sample";bool once=args.Length>0&&args[0]=="--once";
   bool created;using(var mutex=new Mutex(true,@"Local\FluentSoundSwitcherAppMeter"+(sample||once?Process.GetCurrentProcess().Id.ToString():""),out created)){
@@ -346,16 +355,17 @@ class FluentAppMeter {
    try{Refresh(false);SafeWrite(Output, Sample());}catch{}
    try{while(true){long now=Now();
     if(!sample&&!once&&now>=glassAt){
-     PublishWindowsTheme();
+     PublishWindowsTheme();FluentReleaseCheck.Poll();
      try{FluentGlass.Apply(false);}catch(Exception e){File.WriteAllText(Error,DateTime.UtcNow.ToString("o")+" glass "+e.ToString());}
      CheckAction();
+     FluentDeviceSettings.Poll();
      glassAt=now+500;
      if(FluentGlass.AppRunning)appSeen=now;
      else if(now-appSeen>15000)break;
     }
     if(once||sample)enabled=true;else if(now>=leaseAt){enabled=Enabled();leaseAt=now+500;}
-    if(enabled){try{if(now>=refreshAt){Refresh();refreshAt=now+1500;}string json=Sample();if(once||sample)Console.WriteLine(json);else SafeWrite(Output, json);}catch(Exception e){File.WriteAllText(Error,DateTime.UtcNow.ToString("o")+" "+e.ToString());refreshAt=0;}}
-    else if(Entries.Count>0||InputMeters.Count>0){Clear();StopProcessMeters();refreshAt=0;}
+    if(enabled){if(!once&&!sample){FluentAsioInfo.Poll();if(FluentAbletonMeter.Leased)FluentAbletonMeter.Poll();else FluentAbletonMeter.Idle();}try{if(now>=refreshAt){Refresh();refreshAt=now+1500;}string json=Sample();if(once||sample)Console.WriteLine(json);else SafeWrite(Output, json);}catch(Exception e){File.WriteAllText(Error,DateTime.UtcNow.ToString("o")+" "+e.ToString());refreshAt=0;}}
+    else{FluentAbletonMeter.Idle();if(Entries.Count>0||InputMeters.Count>0){Clear();StopProcessMeters();refreshAt=0;}}
     if(once||(sample&&Now()>=end))break;Thread.Sleep(enabled?50:500);
    }}finally{Clear();StopProcessMeters();}
   }return 0;

@@ -1,0 +1,6 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const source=fs.readFileSync('work/fss-device-settings.js','utf8');let effects=[];
+const context={Promise,Vt:()=>{},Tt:()=>({i18n:{language:'zh-TW'}}),x:{useState:v=>[v,()=>{}],useRef:v=>({current:v}),useEffect:f=>effects.push(f)},z:{jsx:(type,props)=>({type,props}),jsxs:(type,props)=>({type,props}),Fragment:'fragment'},FssDeviceGlyph:()=>{},Ht:'button',Wn:'dropdown',Xn:'option',setTimeout,clearTimeout};
+vm.createContext(context);vm.runInContext(source,context);
+vm.runInContext('fssDeviceCache.output={devices:[{id:"out",name:"Speaker",active:true}],id:"out",data:null};FssDeviceSettings({direction:"output"})',context);assert.equal(effects.length,1);const queue=context.fssDeviceQueue;effects[0]();assert.strictEqual(context.fssDeviceQueue,queue);console.log('PASS: revisiting cached output page starts no request');
+const c=vm.createContext({Date,Map,Promise});vm.runInContext(fs.readFileSync('work/fss-session-policy.js','utf8'),c);assert.equal(vm.runInContext('fssNormalizeSessions([{pid:0,deviceId:"out",name:"System Sounds"}],{timestamp:Date.now(),sessionStatus:{"0:out":{state:2,alive:false}}}).length',c),1);console.log('PASS: expired native system-sounds session remains visible');

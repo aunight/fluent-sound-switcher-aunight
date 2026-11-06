@@ -31,3 +31,26 @@ The audio helper includes `work/FluentInputPeak.cs` alongside `FluentAppMeter.cs
 ### Packaged app icons
 
 Include `work/FluentAppIcons.cs` when compiling the audio helper, with a reference to `System.Xml.dll`. It resolves the executable entry in AppxManifest.xml and prefers the corresponding unplated PNG asset, then falls back to the EXE icon for unpackaged apps. `node work/test-app-icons.cjs` verifies that fresh, device-specific icon data reaches the mixer. `work/test-app-icons-native.cs` can verify the selected PNG against an installed package asset.
+
+### Advanced device settings build
+
+Run `npm ci --prefix work/build-tools` before building the embedded UI. Clean-CSS minifies styles and Terser compresses JavaScript, preserving top-level names to fit the fixed native asset capacity.
+
+Add `work/FluentDeviceSettings.cs` to the helper compilation alongside all sources above. Keep the entire original `third-party/SoundVolumeView/` distribution and `THIRD_PARTY_NOTICES.md`; the installer includes them. The component is not MIT licensed. Configuration requests use a separate request/response mailbox, endpoint IDs rather than names, expiry and one-shot consumption. No audio settings are polled while the page is closed.
+
+### ASIO detection build
+
+Include `work/FluentAsioInfo.cs`, `work/FluentAbletonMeter.cs` and `work/FluentReleaseCheck.cs`. Detection reads registry entries, process modules and live Ableton engine logs without initializing an ASIO driver.
+
+ASIO scanning now requires compiling the helper with `/platform:x64` so it can inspect 64-bit DAW driver modules. It filters to visible applications and known audio hosts in the current Windows session. UI Automation scanning has been removed; WPF/UIAutomation references are no longer needed. Scanning runs in an isolated worker process with an 8-second timeout and reports loaded modules, not confirmed active-driver use.
+
+### Ableton ASIO meter
+
+The helper now includes `work/FluentAbletonMeter.cs`. Add this source when compiling. It reads `output_meter_left/right` from the existing local Ableton Live MCP Remote Script on loopback port 8765. It only makes read-only requests while the visible mixer renews its lease. Meter data expires after one second; errors back off instead of synthesizing activity. It requires that Remote Script and currently supports a single running Live instance. This is application-master metering, not endpoint loopback metering, and it works with native ASIO. SonoBus standalone still needs its own audio-meter bridge.
+
+ASIO meter transport now subscribes to Live meter-property notifications through the existing local bridge. A transient listener pushes peak values over a token-checked loopback UDP socket; a separate tiny `asio-level.json` avoids audio-session enumeration delays. A dedicated UI lease and an eight-second producer expiry remove listeners when monitoring stops. It changes no Live project, installed Remote Script files, audio routing or driver settings. Local source measurements: previous RPC read median 636 ms (8 calls), native push median 47 ms (172 updates in 8 seconds). These are source-data timings, not pixel-render latency.
+
+
+### Release updates
+
+Compile all helper sources with `/platform:x64` and references to System.Web.Extensions.dll, System.Drawing.dll and System.Xml.dll. The installer bundles RELEASE_NOTES.md. FluentReleaseCheck queries this edition's latest GitHub release, verifies the owned installer asset SHA-256, and installs only on user request or when automatic updates are enabled (off by default). A local build newer than the published release uses its bundled notes. Keep the Inno AppVersion, updater CurrentVersion and release tag consistent.

@@ -13,7 +13,7 @@ function fssNormalizeSessions(list, telemetry, now = Date.now()) {
     const auxiliary = /^(LineCall|LineMediaPlayer)(\.exe)?$/i.test(process);
     if (auxiliary && !original.muted && !(status?.lastAudible > 0 &&
         now - status.lastAudible <= 4000 && now - status.lastAudible >= -1000)) continue;
-    if (status?.state === 2 || status?.alive === false) continue;
+    if (original.pid!==0 && (status?.state === 2 || status?.alive === false)) continue;
     const session = {...original,
       icon: typeof status?.icon === 'string' && status.icon.startsWith('data:image/png;base64,') ? status.icon : original.icon,
       processName: status?.processName,
@@ -37,6 +37,8 @@ function fssSortSessions(sessions, orders, pinned = {}) {
   for (const session of sessions) if (!devices.has(session.deviceId)) devices.set(session.deviceId,devices.size);
   return sessions.map((session,index) => ({session,index})).sort((a,b) => {
     if (a.session.deviceId !== b.session.deviceId) return devices.get(a.session.deviceId)-devices.get(b.session.deviceId);
+    const systemLast = Number(a.session.pid === 0) - Number(b.session.pid === 0);
+    if (systemLast) return systemLast;
     const pins = pinned[a.session.deviceId] || [];
     const pinDifference = Number(pins.includes(b.session.fssOrderKey))-Number(pins.includes(a.session.fssOrderKey));
     if (pinDifference) return pinDifference;
@@ -81,7 +83,7 @@ function fssSaveOrder(device, rows) {
 async function fssReadSessionTelemetry() {
   const store = await Mc.load('app-meter.json',{autoSave:false});
   await store.reload();
-  return {timestamp:await store.get('timestamp'),sessionStatus:await store.get('sessionStatus')};
+  return {timestamp:await store.get('timestamp'),sessionStatus:await store.get('sessionStatus'),systemSounds:await store.get('systemSounds')};
 }
 function fssSessionFallback(telemetry,now=Date.now()) {
   if (!telemetry || !Number.isFinite(telemetry.timestamp) || now-telemetry.timestamp>5000) return [];
@@ -91,7 +93,9 @@ async function oy() {
   const [list,telemetry,orders] = await Promise.all([
     fssOriginalSessions().catch(()=>null),fssReadSessionTelemetry().catch(()=>null),fssLoadOrders().catch(()=>fssOrders.value)
   ]);
-  const sessions=fssNormalizeSessions(list || fssSessionFallback(telemetry),telemetry)
+  const rows=[...(list || fssSessionFallback(telemetry))];
+  if(telemetry&&Date.now()-telemetry.timestamp<5000)for(const [deviceId,sound]of Object.entries(telemetry.systemSounds||{}))if(!rows.some(row=>row.pid===0&&row.deviceId===deviceId))rows.push({...sound,pid:0,deviceId});
+  const sessions=fssNormalizeSessions(rows,telemetry)
     .filter(session=>session.pid===0 || !fssOrders.ignored[fssAppIdentity(session)]);
   return fssSortSessions(sessions,orders,fssOrders.pinned);
 }
