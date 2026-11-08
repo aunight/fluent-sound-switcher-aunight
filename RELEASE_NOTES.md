@@ -14,6 +14,9 @@
 4. 設定頁面與圖示
 拉開 ASIO 控制項及應用程式卡片間距，保留區塊標題圖示。側邊欄採用 Microsoft Fluent 彩色圖示，ASIO 應用程式名稱旁顯示程式本身圖示；附上圖示授權資訊。
 
+5. 安裝與升級
+Windows x64 安裝檔可覆蓋既有 AuNight 版本並保留設定。安裝檔尚未簽章，Windows 仍可能顯示安全提示。
+
 English
 
 1. MiniFuse ASIO settings
@@ -27,6 +30,9 @@ The selected row aligns over the closed field, and the menu expands upward and d
 
 4. Settings layout and icons
 Added spacing between ASIO controls and application cards while retaining section-heading icons. Navigation uses Microsoft Fluent Color icons, and ASIO application names show their own application icons. Included icon attribution and licensing.
+
+5. Installation and upgrades
+The Windows x64 installer upgrades existing AuNight installations while preserving settings. The installer is unsigned, so Windows may still display a security prompt.
 
 2026.11.06.9
 
