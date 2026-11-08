@@ -1,8 +1,8 @@
 ﻿[Setup]
 AppId=FluentSoundSwitcher.Custom
 AppName=Fluent Sound Switcher
-AppVersion=2026.11.06.9
-AppVerName=Fluent Sound Switcher 2026.11.06.9
+AppVersion=2026.11.08.12
+AppVerName=Fluent Sound Switcher 2026.11.08.12
 DefaultDirName={code:ExistingInstallDir}
 UsePreviousAppDir=no
 DefaultGroupName=Fluent Sound Switcher
@@ -12,7 +12,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 OutputDir=..\outputs
-OutputBaseFilename=FluentSoundSwitcher-2026.11.06.9-Setup-x64
+OutputBaseFilename=FluentSoundSwitcher-2026.11.08.12-Setup-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -36,6 +36,7 @@ Name: "autostart"; Description: "登入 Windows 時啟動"
 Name: "desktopicon"; Description: "建立桌面捷徑"; Flags: unchecked
 
 [Files]
+Source: "..\third-party\fluent-icons\*"; DestDir: "{app}\third-party\fluent-icons"; Flags: ignoreversion
 Source: "..\RELEASE_NOTES.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\outputs\release-20261104\FluentSoundSwitcher.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\outputs\release-20261104\fluent-sound-switcher.exe"; DestDir: "{app}"; Flags: ignoreversion

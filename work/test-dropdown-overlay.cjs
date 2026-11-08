@@ -1,0 +1,5 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const s=fs.readFileSync('work/current-ui-patched.js','utf8');const f=s.slice(s.indexOf('function vE('),s.indexOf('function bE(',s.indexOf('function vE(')));
+let config;const c=vm.createContext({x:{useRef:()=>({current:null})},gu:()=>({}),Je:(...refs)=>value=>refs.forEach(r=>typeof r==='function'?r(value):r.current=value),_h:opts=>(config=opts,{containerRef:()=>{},targetRef:()=>{}})});vm.runInContext(f,c);
+for(const selectedOffset of [4,38,212]){const refs=vm.runInContext('vE({})',c);let rowOrigin;refs[0]({style:{setProperty:(key,value)=>{assert.equal(key,"--fss-open-row");rowOrigin=value}},querySelector:()=>({offsetHeight:32,getBoundingClientRect:()=>({top:100+selectedOffset})}),getBoundingClientRect:()=>({top:100})});const offset=config.offset({targetRect:{height:36}});assert.equal(400+offset+selectedOffset+16,418);assert.equal(rowOrigin,(selectedOffset+16)+"px");assert.equal(config.pinned,true);assert.equal(config.coverTarget,true)}
+console.log('PASS: first, middle and last selected rows align their centers with the closed field');

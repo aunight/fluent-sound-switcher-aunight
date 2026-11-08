@@ -1,3 +1,33 @@
+2026.11.08.12
+
+繁體中文
+
+1. MiniFuse ASIO 設定
+在 ASIO 區塊直接調整緩衝大小與安全模式，自動讀取目前設定，套用後讀回確認。僅支援已驗證的 API 5.13 與單台 MiniFuse；其他驅動仍使用原廠控制面板。
+
+2. 共用 ASIO 快取
+輸出與輸入分頁共用 ASIO 掃描結果、驅動選擇及 MiniFuse 設定，切換頁面不再重複讀取。保留手動重新掃描功能。
+
+3. 下拉選單位置與動畫
+已選取列對齊並覆蓋原欄位，選單從該列往上下展開。修正欄位寬度不足、文字換行、底線與原文字箭頭露出的問題，並支援系統減少動態效果設定。
+
+4. 設定頁面與圖示
+拉開 ASIO 控制項及應用程式卡片間距，保留區塊標題圖示。側邊欄採用 Microsoft Fluent 彩色圖示，ASIO 應用程式名稱旁顯示程式本身圖示；附上圖示授權資訊。
+
+English
+
+1. MiniFuse ASIO settings
+Adjust buffer size and Safe Mode directly in the ASIO section. Settings load automatically and changes are verified by reading them back. Limited to tested API 5.13 and one connected MiniFuse; other drivers continue to use their vendor control panels.
+
+2. Shared ASIO cache
+Output and input pages share scan results, driver selection and MiniFuse settings instead of rereading them on every tab switch. Manual rescanning remains available.
+
+3. Dropdown placement and animation
+The selected row aligns over the closed field, and the menu expands upward and downward from that row. Fixed narrow controls, wrapped labels, underlines and exposed original text/arrows. Respects the system reduced-motion preference.
+
+4. Settings layout and icons
+Added spacing between ASIO controls and application cards while retaining section-heading icons. Navigation uses Microsoft Fluent Color icons, and ASIO application names show their own application icons. Included icon attribution and licensing.
+
 2026.11.06.9
 
 繁體中文

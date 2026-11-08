@@ -8,5 +8,5 @@ module.exports=function(js){
   ['i==="general"&&z.jsx(oO,','i==="devices"&&z.jsx(FssDeviceSettings,{}),i==="general"&&z.jsx(oO,'],
   ['general:"\\uE713",hotkeys:','devices:"\\uE7F4",general:"\\uE713",hotkeys:']
  ]){if(!js.includes(a))throw Error('Device settings anchor missing: '+a);js=js.replace(a,b)}
- return js+'\nfunction FssDeviceTitle(){return kt.language.startsWith("zh")?"音訊裝置":"Audio devices"}\n'+fs.readFileSync('work/fss-device-settings.js','utf8');
+ return js+'\n'+fs.readFileSync('work/fss-device-settings.js','utf8');
 };

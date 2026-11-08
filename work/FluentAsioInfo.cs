@@ -39,6 +39,22 @@ static class FluentAsioInfo {
    if(child.WaitForExit(1500)&&child.ExitCode!=0)throw new InvalidOperationException("Unable to open the driver panel; the driver may be unavailable or in use.");
   }
  }
+ [DllImport("kernel32.dll",CharSet=CharSet.Unicode)]static extern IntPtr LoadLibrary(string path);
+ [DllImport("kernel32.dll")]static extern IntPtr GetProcAddress(IntPtr lib,string name);
+ [DllImport("kernel32.dll")]static extern bool FreeLibrary(IntPtr lib);
+ [UnmanagedFunctionPointer(CallingConvention.StdCall)]delegate uint ApiNoArgs();
+ [UnmanagedFunctionPointer(CallingConvention.StdCall)]delegate uint ApiInfo(uint index,IntPtr info);
+ [UnmanagedFunctionPointer(CallingConvention.StdCall)]delegate uint ApiSet(uint index,uint rate,uint size,uint flags);
+ static T Api<T>(IntPtr lib,string name){IntPtr ptr=GetProcAddress(lib,"TUSBAUDIO_"+name);if(ptr==IntPtr.Zero)throw new NotSupportedException("Driver API unavailable.");return (T)(object)Marshal.GetDelegateForFunctionPointer(ptr,typeof(T));}
+ public static object MiniSettings(string value){
+  string dll;using(var hive=RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,RegistryView.Registry64))using(var key=hive.OpenSubKey(@"SOFTWARE\Classes\CLSID\{9B2A3761-A0F5-4544-96AE-E45FB7B6E982}\InprocServer32")){if(key==null)throw new NotSupportedException("MiniFuse driver unavailable.");dll=Path.Combine(Path.GetDirectoryName(Convert.ToString(key.GetValue(null))),"arturiaminifuseusbaudioapi_x64.dll");}
+  if(!File.Exists(dll))throw new FileNotFoundException("Driver API unavailable.");IntPtr lib=LoadLibrary(dll),info=Marshal.AllocHGlobal(196);
+  try{if(lib==IntPtr.Zero||Api<ApiNoArgs>(lib,"GetApiVersion")()!=0x5000d)throw new NotSupportedException("Untested driver API version.");if(Api<ApiNoArgs>(lib,"EnumerateDevices")()!=0||Api<ApiNoArgs>(lib,"GetDeviceCount")()!=1)throw new InvalidOperationException("Connect exactly one MiniFuse device.");
+   var get=Api<ApiInfo>(lib,"GetASIOInstanceInfo");if(get(0,info)!=0)throw new InvalidOperationException("Cannot read ASIO settings.");var before=new int[49];Marshal.Copy(info,before,0,49);int count=before[8];if(count<1||count>40)throw new InvalidOperationException("Invalid buffer list.");var sizes=new List<int>();for(int i=0;i<count;i++)sizes.Add(before[9+i]);
+   if(value!=""){string[] parts=value.Split(':');int number;if(parts.Length!=2||!int.TryParse(parts[1],out number))throw new ArgumentException("Invalid setting.");int size=before[7],flags=before[4];if(parts[0]=="buffer"&&sizes.Contains(number))size=number;else if(parts[0]=="safe"&&(number==0||number==1))flags=(flags&~65536)|(number==1?65536:0);else throw new ArgumentException("Unsupported setting.");var set=Api<ApiSet>(lib,"SetASIOBufferPreferredSize");uint result=set(0,(uint)before[1],(uint)size,(uint)flags);if(result!=0)throw new InvalidOperationException("Driver rejected setting.");if(get(0,info)!=0||Marshal.ReadInt32(info,28)!=size||(Marshal.ReadInt32(info,16)&65536)!=(flags&65536)){set(0,(uint)before[1],(uint)before[7],(uint)before[4]);throw new InvalidOperationException("Readback failed; original settings restored where possible.");}}
+   return new{buffer=Marshal.ReadInt32(info,28),safe=(Marshal.ReadInt32(info,16)&65536)!=0,sizes=sizes};
+  }finally{Marshal.FreeHGlobal(info);if(lib!=IntPtr.Zero)FreeLibrary(lib);}
+ }
  static int scanBusy;static long nextScan;
  public static void Poll(){
   long now=DateTime.UtcNow.Ticks;if(now<Interlocked.Read(ref nextScan)||Interlocked.CompareExchange(ref scanBusy,1,0)!=0)return;

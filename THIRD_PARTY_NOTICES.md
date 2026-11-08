@@ -15,3 +15,6 @@ readme 均完整保留且未修改。此元件為免費軟體，並非 MIT 授�
 
 The utility runs locally, on demand, for device configuration and state readback.
 It is not a background service and does not receive audio samples.
+
+
+Settings navigation uses Microsoft Fluent UI System Icons (Color), MIT licensed. Source: https://github.com/microsoft/fluentui-system-icons. Original SVG files and MIT license are retained in third-party/fluent-icons.

@@ -36,9 +36,10 @@ js=require('./patch-asio-flyout.cjs')(js);
 js=require('./patch-asio-rows.cjs')(js);
 js=require('./patch-update-notice.cjs')(js);
 js=require('./patch-update-controls.cjs')(js);
+js+='\n'+fs.readFileSync('work/fss-color-icons.js','utf8');
 new vm.Script(js);
 // Minify CSS and compress JavaScript while preserving top-level names.
-js=require('./build-tools/node_modules/terser').minify_sync(js,{compress:{defaults:true,passes:2},mangle:{toplevel:false,keep_fnames:true},format:{comments:false}}).code;
+js=require('./build-tools/node_modules/terser').minify_sync(js,{compress:{defaults:true,passes:2},mangle:{toplevel:false,keep_fnames:false},format:{comments:false}}).code;
 new vm.Script(js);
 const asset=z.brotliCompressSync(Buffer.from(js),{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}});
 if(asset.length>capacity)throw Error('Asset too large: '+asset.length);
