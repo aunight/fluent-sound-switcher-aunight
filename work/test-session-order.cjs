@@ -36,3 +36,7 @@ assert.equal(run("fssSessionFallback({timestamp:now,sessionStatus:{sys:{pid:0,st
  assert.equal(vm.runInContext('fssOrders.ignored.steam',context),undefined);
  console.log('PASS: pin priority and reversible ignore preferences');
 })().catch(error=>{console.error(error);process.exitCode=1});
+
+assert.deepEqual(run("fssNormalizeSessions([{pid:50,deviceId:'a',name:'Windows Shell Experience Host'},{pid:51,deviceId:'a',name:'ShellExperienceHost.exe'},{pid:52,deviceId:'a',name:'Unigram'},{pid:0,deviceId:'a',name:'System Sounds'}],null,now)").map(r=>r.pid),[52,0]);
+assert.deepEqual(run("fssNormalizeSessions([{pid:53,deviceId:'a',name:'Windows host'}],{timestamp:now,sessionStatus:{'53:a':{processName:'ShellExperienceHost',state:1}}},now)"),[]);
+console.log('PASS: hide only ShellExperienceHost by process or display name; preserve apps and System Sounds');

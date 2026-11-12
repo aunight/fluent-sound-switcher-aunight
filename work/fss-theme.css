@@ -144,7 +144,7 @@
 :root:is([data-window=main],[data-window=flyout]) button[data-mute-control][aria-pressed=true]{background:transparent!important;box-shadow:none!important;border-color:transparent!important}
 :root:is([data-window=main],[data-window=flyout]) button[data-mute-control]:is(:hover,:active,:focus-visible){background:transparent!important;box-shadow:none!important;border-color:transparent!important}
 :root:is([data-window=main],[data-window=flyout]) [data-app-pid]>button:first-child,
-:root:is([data-window=main],[data-window=flyout]) [data-app-pid]>button:first-child:is(:hover,:active,:focus-visible){background:transparent!important;box-shadow:none!important}
+:root:is([data-window=main],[data-window=flyout]) [data-app-pid]>button:first-child:is(:hover,:active,:focus-visible){background:transparent!important;box-shadow:none!important;outline:none!important}
 
 /* App icon/name hover card, including its drag preview: dark amber glass. */
 :root:is([data-window=main],[data-window=flyout]) [data-app-preview],

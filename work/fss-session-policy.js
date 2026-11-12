@@ -10,6 +10,7 @@ function fssNormalizeSessions(list, telemetry, now = Date.now()) {
     const key = fssSessionIdentity(original);
     const status = fresh ? telemetry.sessionStatus?.[key] : null;
     const process = String(status?.processName || original.name || '').replace(/\s/g, '');
+    if (/^(Windows)?ShellExperienceHost(\.exe)?$/i.test(process)) continue;
     const auxiliary = /^(LineCall|LineMediaPlayer)(\.exe)?$/i.test(process);
     if (auxiliary && !original.muted && !(status?.lastAudible > 0 &&
         now - status.lastAudible <= 4000 && now - status.lastAudible >= -1000)) continue;

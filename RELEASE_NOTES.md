@@ -1,3 +1,21 @@
+2026.11.12.1
+
+繁體中文
+
+1. 混音器清單
+隱藏 Windows Shell Experience Host 系統介面程序，避免多出通用方塊圖示的應用程式列；保留系統音效與其他應用程式的控制。
+
+2. 應用程式圖示
+移除應用程式圖示按鈕外的黃色焦點方框，保留原有圖示、懸停名稱及拖曳功能。
+
+English
+
+1. Mixer list
+Hide the Windows Shell Experience Host system UI process to prevent an extra application row with a generic icon. Preserve System Sounds and other application controls.
+
+2. Application icons
+Remove the yellow focus rectangle around application artwork buttons while retaining icons, hover labels and drag behavior.
+
 2026.11.08.12
 
 繁體中文
