@@ -18,12 +18,12 @@ module.exports = function(js) {
 
   // 2. Intercept ZD() to route volume adjustment for pid===0 to app-meter-control.json
   const s_zd = 'function ZD(e,n,r){return te("set_app_session_volume",{pid:e,deviceId:n,level:r})}';
-  const r_zd = 'async function ZD(e,n,r){if(e===0){try{const c=await Mc.load("app-meter-control.json",{autoSave:!1});await c.set("set_system_sound_volume",r);await c.set("deviceId",n);await c.delete("command");await c.save()}catch(err){console.error(err)}return}return te("set_app_session_volume",{pid:e,deviceId:n,level:r})}';
+  const r_zd = 'async function ZD(e,n,r){if(e===0){try{const c=await Mc.load("app-meter-action.json",{autoSave:!1});await c.set("set_system_sound_volume",r);await c.set("deviceId",n);await c.delete("command");await c.save()}catch(err){console.error(err)}return}return te("set_app_session_volume",{pid:e,deviceId:n,level:r})}';
   if (js.includes(s_zd)) js = js.replace(s_zd, r_zd);
 
   // 3. Intercept QD() to route mute toggle for pid===0 to app-meter-control.json
   const s_qd = 'function QD(e,n,r){return te("set_app_session_mute",{pid:e,deviceId:n,muted:r})}';
-  const r_qd = 'async function QD(e,n,r){if(e===0){try{const c=await Mc.load("app-meter-control.json",{autoSave:!1});await c.set("set_system_sound_mute",r);await c.set("deviceId",n);await c.delete("command");await c.save()}catch(err){console.error(err)}return}return te("set_app_session_mute",{pid:e,deviceId:n,muted:r})}';
+  const r_qd = 'async function QD(e,n,r){if(e===0){try{const c=await Mc.load("app-meter-action.json",{autoSave:!1});await c.set("set_system_sound_mute",r);await c.set("deviceId",n);await c.delete("command");await c.save()}catch(err){console.error(err)}return}return te("set_app_session_mute",{pid:e,deviceId:n,muted:r})}';
   if (js.includes(s_qd)) js = js.replace(s_qd, r_qd);
 
   // 4. Update ce to use native system sounds icon for pid===0 and disable drag on system sounds

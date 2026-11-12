@@ -1,3 +1,21 @@
+2026.11.13.1
+
+繁體中文
+
+1. 系統通知靜音
+將系統音效的音量與靜音指令改用獨立操作通道，避免與音量偵測資料的寫入互相覆蓋。已使用 Antigravity 的 Windows 測試通知驗證靜音狀態與輸出峰值。
+
+2. 安裝
+Windows x64 安裝檔可覆蓋既有版本並保留設定。安裝檔尚未簽章，Windows 可能顯示安全提示。
+
+English
+
+1. System notification muting
+Use a separate action channel for system-sounds volume and mute commands to prevent conflicts with meter updates. Verified the mute state and output peak using an Antigravity Windows test notification.
+
+2. Installation
+The Windows x64 installer upgrades an existing installation while preserving settings. The installer is unsigned, so Windows may display a security prompt.
+
 2026.11.12.2
 
 繁體中文

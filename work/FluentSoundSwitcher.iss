@@ -1,8 +1,8 @@
 ﻿[Setup]
 AppId=FluentSoundSwitcher.Custom
 AppName=Fluent Sound Switcher
-AppVersion=2026.11.12.2
-AppVerName=Fluent Sound Switcher 2026.11.12.2
+AppVersion=2026.11.13.1
+AppVerName=Fluent Sound Switcher 2026.11.13.1
 DefaultDirName={code:ExistingInstallDir}
 UsePreviousAppDir=no
 DefaultGroupName=Fluent Sound Switcher
@@ -12,7 +12,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 OutputDir=..\outputs
-OutputBaseFilename=FluentSoundSwitcher-2026.11.12.2-Setup-x64
+OutputBaseFilename=FluentSoundSwitcher-2026.11.13.1-Setup-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern

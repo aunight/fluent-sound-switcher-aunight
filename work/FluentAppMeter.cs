@@ -247,6 +247,12 @@ class FluentAppMeter {
    using(var r=new StreamReader(f))text=r.ReadToEnd();
    var obj=Json.Deserialize<Dictionary<string,object>>(text);
    if(obj!=null){
+    if(obj.ContainsKey("set_system_sound_mute")||obj.ContainsKey("set_system_sound_volume")){
+     string device=obj.ContainsKey("deviceId")?Convert.ToString(obj["deviceId"]):null;
+     float? volume=obj.ContainsKey("set_system_sound_volume")?(float?)Convert.ToSingle(obj["set_system_sound_volume"]):null;
+     bool? mute=obj.ContainsKey("set_system_sound_mute")?(bool?)Convert.ToBoolean(obj["set_system_sound_mute"]):null;
+     UpdateSystemSound(device,volume,mute);try{File.Delete(ActionFile);}catch{}return;
+    }
     object act;
     if(obj.TryGetValue("action",out act)&&act!=null&&(act.ToString()=="update_check"||act.ToString()=="update_install"||act.ToString()=="auto_update_changed")){
      string action=act.ToString();try{File.Delete(ActionFile);}catch{SafeWrite(ActionFile,"{}");}
