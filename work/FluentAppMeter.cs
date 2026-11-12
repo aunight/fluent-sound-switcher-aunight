@@ -119,6 +119,11 @@ class FluentAppMeter {
  static readonly Dictionary<string,FluentInputPeak> InputMeters=new Dictionary<string,FluentInputPeak>();
  static readonly Dictionary<string,IPeak> OutputMeters=new Dictionary<string,IPeak>();
  static readonly Dictionary<string,object> LastSystemSounds=new Dictionary<string,object>();
+ static readonly Dictionary<string,bool> SystemMuteOverrides=new Dictionary<string,bool>(StringComparer.OrdinalIgnoreCase);
+ static bool ShellSound(MeterEntry e){return string.Equals(e.ProcessName,"ShellExperienceHost",StringComparison.OrdinalIgnoreCase);}
+ static bool OnDevice(MeterEntry e,string id){return !string.IsNullOrEmpty(id)&&string.Equals(e.Key.Substring(e.Key.IndexOf(':')+1),id,StringComparison.OrdinalIgnoreCase);}
+ static void SyncShellMute(){foreach(var e in Entries){if(!ShellSound(e))continue;bool mute;string id=e.Key.Substring(e.Key.IndexOf(':')+1);if(!SystemMuteOverrides.TryGetValue(id,out mute))continue;try{bool current;if(e.Volume.GetMute(out current)==0&&current!=mute){Guid context=Guid.Empty;e.Volume.SetMute(mute,ref context);}}catch{}}}
+
  static void Clear(bool inputs=true){lock(CommandLock){if(inputs){foreach(var meter in InputMeters.Values)meter.Dispose();InputMeters.Clear();}foreach(var meter in OutputMeters.Values)Release(meter);OutputMeters.Clear();foreach(var e in Entries)Release(e.Session);Entries.Clear();}}
  static void Refresh(bool inputs=true){lock(CommandLock){RefreshCore();if(inputs)RefreshInputs();}}
  static void RefreshInputs(){
@@ -152,6 +157,8 @@ class FluentAppMeter {
     }catch{}finally{Release(sessions);Release(managerObject);Release(device);}
    }
   }finally{Release(devices);Release(enumerator);}
+  foreach(var e in Entries)if(e.Pid==0)try{bool mute;if(e.Volume.GetMute(out mute)==0)SystemMuteOverrides[e.Key.Substring(2)]=mute;}catch{}
+  SyncShellMute();
   var live=new HashSet<uint>();foreach(var entry in Entries)live.Add(entry.Pid);
   foreach(uint pid in new List<uint>(ProcessMeters.Keys)){if(!live.Contains(pid)){ProcessMeters[pid].Dispose();ProcessMeters.Remove(pid);}}
   foreach(uint pid in new List<uint>(ProcessFailures.Keys))if(!live.Contains(pid))ProcessFailures.Remove(pid);
@@ -220,23 +227,14 @@ class FluentAppMeter {
  }
  static void UpdateSystemSound(string devId, float? vol, bool? mute){
   Refresh();
-  bool matched=false;
+  if(mute.HasValue&&!string.IsNullOrEmpty(devId))SystemMuteOverrides[devId]=mute.Value;
   foreach(var e in Entries){
-   if(e.Key.StartsWith("0:") && (string.IsNullOrEmpty(devId) || e.Key.IndexOf(devId, StringComparison.OrdinalIgnoreCase) >= 0)){
-    matched=true;
-    Guid empty=Guid.Empty;
-    if(vol.HasValue) try{e.Volume.SetMasterVolume(vol.Value,ref empty);}catch{}
-    if(mute.HasValue) try{e.Volume.SetMute(mute.Value,ref empty);}catch{}
-   }
-  }
-  if(!matched){
-   foreach(var e in Entries){
-    if(e.Key.StartsWith("0:")){
-     Guid empty=Guid.Empty;
-     if(vol.HasValue) try{e.Volume.SetMasterVolume(vol.Value,ref empty);}catch{}
-     if(mute.HasValue) try{e.Volume.SetMute(mute.Value,ref empty);}catch{}
-    }
-   }
+   if(!OnDevice(e,devId))continue;
+   bool system=e.Pid==0;
+   if(!system&&!(mute.HasValue&&ShellSound(e)))continue;
+   Guid empty=Guid.Empty;
+   if(system&&vol.HasValue)try{e.Volume.SetMasterVolume(vol.Value,ref empty);}catch{}
+   if(mute.HasValue)try{e.Volume.SetMute(mute.Value,ref empty);}catch{}
   }
   try{SafeWrite(Output, Sample());}catch{}
  }

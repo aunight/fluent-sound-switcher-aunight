@@ -1,3 +1,21 @@
+2026.11.12.2
+
+繁體中文
+
+1. 系統音效靜音
+系統音效的靜音狀態會同步至同一輸出裝置的 Windows Shell Experience Host 音訊工作階段，包括重新建立後的工作階段；解除靜音時同步還原。裝置不存在時不再誤操作其他輸出裝置。
+
+2. 安裝
+Windows x64 安裝檔可覆蓋既有版本並保留設定。安裝檔尚未簽章，Windows 可能顯示安全提示。
+
+English
+
+1. System sounds muting
+Synchronize the system-sounds mute state with Windows Shell Experience Host audio sessions on the same output device, including sessions recreated later. Unmuting is synchronized as well. A missing device no longer causes changes to other output devices.
+
+2. Installation
+The Windows x64 installer upgrades an existing installation while preserving settings. The installer is unsigned, so Windows may display a security prompt.
+
 2026.11.12.1
 
 繁體中文

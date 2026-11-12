@@ -10,7 +10,7 @@ using System.Threading;
 using System.Web.Script.Serialization;
 
 static class FluentReleaseCheck {
- public const string CurrentVersion="2026.11.12.1";
+ public const string CurrentVersion="2026.11.12.2";
  const string Repo="https://github.com/aunight/fluent-sound-switcher-aunight/releases/";
  static readonly string Dir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"com.fluentsoundswitcher.app");
  static long next;static int busy;static Dictionary<string,object> state;
