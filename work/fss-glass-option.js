@@ -1,7 +1,7 @@
 function FssUseGlass(){
- const[enabled,setEnabled]=x.useState(true);
+ const[enabled,setEnabled]=x.useState(false);
  const[error,setError]=x.useState('');
- x.useEffect(()=>{let alive=true;Mc.load('appearance.json',{autoSave:!1}).then(async store=>{await store.reload().catch(()=>{});const v=await store.get('win7Glass');if(alive)setEnabled(v!==false)}).catch(()=>{});return()=>{alive=false}},[]);
+ x.useEffect(()=>{let alive=true;Mc.load('appearance.json',{autoSave:!1}).then(async store=>{await store.reload().catch(()=>{});const v=await store.get('win7Glass');if(alive)setEnabled(v===true)}).catch(()=>{});return()=>{alive=false}},[]);
  Vt('fss-glass-changed',event=>setEnabled(event.payload===true));
  async function change(value){
   try{const store=await Mc.load('appearance.json',{autoSave:!1});await store.reload().catch(()=>{});await store.set('win7Glass',value);await store.save();setEnabled(value);setError('');await Ih('fss-glass-changed',value)}

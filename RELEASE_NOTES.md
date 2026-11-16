@@ -1,3 +1,27 @@
+2026.11.16.1
+
+繁體中文
+
+1. 新安裝預設外觀
+全新安裝預設跟隨 Windows 明暗主題及外觀，不再自動開啟黃色 Win7 玻璃。Win7 玻璃仍可在設定手動開啟，既有使用者儲存的選擇會保留。
+
+2. 收藏裝置清單
+右下角面板在有收藏時只顯示收藏的啟用或停用裝置，方便重新啟用已停用的收藏裝置。沒有收藏時才顯示啟用裝置，輸入與輸出分別判定。
+
+3. 安裝與升級
+Windows x64 安裝檔可覆蓋既有版本並保留設定。安裝檔尚未簽章，Windows 可能顯示安全提示。
+
+English
+
+1. Default appearance for new installations
+New installations follow the Windows light/dark theme and appearance instead of automatically enabling yellow Win7 glass. Win7 glass remains available in settings, and existing saved preferences are preserved.
+
+2. Favorite device lists
+When favorites exist, the tray panel shows only favorited active or disabled devices, allowing disabled favorites to be enabled again. Without favorites, it shows active devices. Input and output lists are handled separately.
+
+3. Installation and upgrades
+The Windows x64 installer upgrades an existing installation while preserving settings. The installer is unsigned, so Windows may display a security prompt.
+
 2026.11.13.1
 
 繁體中文
