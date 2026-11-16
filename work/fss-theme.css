@@ -201,3 +201,7 @@
 [data-fss-caption-controls],[data-fss-caption-controls]>button{-webkit-app-region:no-drag!important;pointer-events:auto;position:relative;z-index:5}
 [data-fss-caption-controls]>button{flex:0 0 46px;box-sizing:border-box}
 [data-output-device] .fss-track-motion{background:rgba(255,255,255,.72)}
+
+.fss-panel-settings{position:static;flex-shrink:0;margin-left:auto;box-sizing:border-box}.fss-flyout-glass[data-mode=audio] section~section .fss-panel-settings{display:none}
+:root[data-window=main] .fss-volume-control:is([data-input-device],[data-output-device]) .fss-volume-track{margin-right:9px}
+.fss-flyout-glass [class]:has(>.fss-panel-settings){display:flex;align-items:center}

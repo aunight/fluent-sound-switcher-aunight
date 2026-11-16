@@ -1,3 +1,33 @@
+2026.11.16.3
+
+繁體中文
+
+1. 玻璃質感與配色分離
+Win7 玻璃保留透明、模糊與反光質感，移除固定黃色背景、黃色滑桿及強制白字。開啟玻璃後仍依 Windows 明暗主題與強調色顯示。
+
+2. 設定齒輪重疊
+右下角快速音量面板的設定齒輪改放在第一個區塊的標題列，隨內容一起捲動，避免裝置按鈕滑到齒輪底下而重疊。
+
+3. 音量滑桿對齊
+主視窗音量滑桿在 100 時，圓點中心與上方收藏星星中心對齊，保留音量數字的位置。
+
+4. 安裝與升級
+Windows x64 安裝檔可覆蓋既有版本並保留設定。安裝檔尚未簽章，Windows 可能顯示安全提示。
+
+English
+
+1. Separate glass material from color
+Win7 glass retains transparency, blur and reflections without forcing a yellow background, yellow sliders or white text. Windows light/dark appearance and accent colors remain in effect when glass is enabled.
+
+2. Overlapping settings button
+The tray volume panel settings button now sits in the first section heading and scrolls with the content, preventing device buttons from overlapping it.
+
+3. Volume slider alignment
+At 100, the main-window slider thumb center aligns vertically with the favorite star above it while retaining the position of the numeric volume label.
+
+4. Installation and upgrades
+The Windows x64 installer upgrades an existing installation while preserving settings. The installer is unsigned, so Windows may display a security prompt.
+
 2026.11.16.1
 
 繁體中文

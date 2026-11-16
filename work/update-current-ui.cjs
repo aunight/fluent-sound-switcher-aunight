@@ -36,6 +36,7 @@ js=require('./patch-asio-flyout.cjs')(js);
 js=require('./patch-asio-rows.cjs')(js);
 js=require('./patch-update-notice.cjs')(js);
 js=require('./patch-update-controls.cjs')(js);
+js=require('./patch-device-layout.cjs')(js);
 js+='\n'+fs.readFileSync('work/fss-color-icons.js','utf8');
 new vm.Script(js);
 // Minify CSS and compress JavaScript while preserving top-level names.
