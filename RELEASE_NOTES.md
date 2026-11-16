@@ -1,3 +1,33 @@
+2026.11.16.6
+
+繁體中文
+
+1. 收藏、排序與裝置識別碼
+更新前自動備份設定，並記錄裝置名稱與輸入／輸出方向。識別碼變更時，依唯一匹配轉移收藏、裝置排序及自訂名稱。無法匹配的原資料會保留；舊資料沒有名稱紀錄時無法保證自動還原。
+
+2. MiniFuse ASIO 取樣率
+可直接選擇驅動回報的取樣率，寫入後讀回驗證。實測 48000→44100→48000 Hz，緩衝大小與安全模式保持不變。限已驗證的 API 5.13 與單台 MiniFuse；Windows 共用格式另行標示。
+
+3. 混音器清單穩定性
+保留已確認的系統音效列，避免短暫資料缺失造成閃爍；依即時工作階段移除切換裝置後殘留的 APP 舊列，保留真正同時輸出的多裝置工作階段。系統音效也可忽略並從已忽略清單恢復。
+
+4. 格式選單與安裝
+相容格式文字的大小寫與單複數寫法，讀取失敗時顯示提示。Windows x64 安裝檔可覆蓋既有版本。安裝檔尚未簽章，Windows 可能顯示安全提示。
+
+English
+
+1. Favorites, ordering and device IDs
+Back up settings before upgrades and record device names and directions. Migrate favorites, device order and aliases when a changed ID has a unique match. Unmatched records remain intact; older records without saved device names cannot always be recovered automatically.
+
+2. MiniFuse ASIO sample rate
+Select a driver-reported rate directly with readback verification. Tested 48000→44100→48000 Hz while retaining buffer size and Safe Mode. Limited to the tested API 5.13 and one connected MiniFuse; Windows shared-format settings are labeled separately.
+
+3. Mixer list stability
+Retain confirmed System Sounds rows across temporary snapshot gaps. Remove stale app rows after output changes while preserving confirmed multi-device sessions. System Sounds can be ignored and restored from the ignored-app list.
+
+4. Format menus and installation
+Accept case and plural variations in format descriptions and show an unavailable message on read failure. The Windows x64 installer upgrades existing installations. It is unsigned, so Windows may display a security prompt.
+
 2026.11.16.3
 
 繁體中文

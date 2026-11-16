@@ -51,9 +51,10 @@ function FssAppContextMenu({context,devices,onClose,onRefresh,onMute,onRoute}) {
     if(session.pid!==0){
       children.push(item('切換輸出裝置 ▸',()=>setExpanded(expanded==='devices'?'':'devices'),{icon:'switch'}));
       if(expanded==='devices')children.push(z.jsx('div',{role:'group','aria-label':'切換輸出裝置',className:'fss-app-context-submenu',children:devices.map(device=>item(device.name,()=>action(()=>onRoute(session,device.id)),{disabled:device.id===session.deviceId,key:device.id,icon:'device'}))},'devices'));
-      children.push(item('忽略此應用程式',()=>action(()=>fssWritePreferences(prefs=>{prefs.ignored={...prefs.ignored,[fssAppIdentity(session)]:session.name}})),{icon:'ignore'}));
+
     }
   }
+  if(session)children.push(item('忽略此應用程式',()=>action(()=>fssWritePreferences(prefs=>{prefs.ignored={...prefs.ignored,[fssAppIdentity(session)]:session.name}})),{icon:'ignore'}));
   if(ignored.length){
     children.push(z.jsx('div',{role:'separator',className:'fss-app-context-separator'},'separator'));
     children.push(item('已忽略的應用程式（'+ignored.length+'） ▸',()=>setExpanded(expanded==='ignored'?'':'ignored'),{icon:'apps'}));

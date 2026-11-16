@@ -13,7 +13,7 @@ module.exports = function(js) {
 
   // 1. Intercept oy() to inject system sounds from app-meter.json
   const s_oy = 'function oy(){return te("list_app_sessions")}';
-  const r_oy = 'async function oy(){const [list,meter]=await Promise.all([te("list_app_sessions"),Mc.load("app-meter.json",{autoSave:!1}).then(async m=>{await m.reload();return await m.get("systemSounds")}).catch(()=>null)]);const sessions=Array.isArray(list)?[...list]:[];if(meter&&typeof meter==="object"){for(const devId of Object.keys(meter)){const s=meter[devId];if(s&&!sessions.some(x=>x.pid===0&&x.deviceId===devId)){sessions.unshift({pid:0,name:s.name||"系統音效",deviceId:devId,volume:typeof s.volume==="number"?s.volume:1,muted:!!s.muted,active:!0,icon:s.icon||' + sysIconLiteral + '})}}}return sessions}';
+  const r_oy = 'async function oy(){return te("list_app_sessions")}';
   if (js.includes(s_oy)) js = js.replace(s_oy, r_oy);
 
   // 2. Intercept ZD() to route volume adjustment for pid===0 to app-meter-control.json

@@ -21,6 +21,6 @@ const find=(tree,text)=>buttons(tree).find(button=>label(button)===text);
  await find(render(),'忽略此應用程式').props.onClick();assert.equal(store.ignored.steam,'Steam');
  await find(render('ignored'),'恢復 Steam').props.onClick();assert.equal(store.ignored.steam,undefined);
  assert(closed>=5&&refreshed>=5);
- context.props.context.session={pid:0,name:'系統音效',fssOrderKey:'系統音效',deviceId:'a',muted:true};tree=render();assert(find(tree,'取消靜音'));assert(!find(tree,'忽略此應用程式'));assert(!find(tree,'切換輸出裝置 ▸'));
+ context.props.context.session={pid:0,name:'系統音效',fssOrderKey:'系統音效',deviceId:'a',muted:true};tree=render();assert(find(tree,'取消靜音'));assert(find(tree,'忽略此應用程式'));assert(!find(tree,'切換輸出裝置 ▸'));
  console.log('PASS: menu icons, standard Refresh icon, no volume-100 item, pin/unpin, PID-specific mute/route, ignore/restore, safe system-sounds menu');
 })().catch(error=>{console.error(error);process.exitCode=1});

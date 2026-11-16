@@ -1,4 +1,5 @@
 function fssAppIdentity(session) {
+  if(session.pid===0)return 'system-sounds';
   return String(session.appId || session.processName || session.name || session.pid).toLowerCase();
 }
 function fssSessionIdentity(session) { return session.pid + ':' + session.deviceId; }
@@ -9,6 +10,7 @@ function fssNormalizeSessions(list, telemetry, now = Date.now()) {
   for (const original of Array.isArray(list) ? list : []) {
     const key = fssSessionIdentity(original);
     const status = fresh ? telemetry.sessionStatus?.[key] : null;
+    if(original.pid!==0&&fresh&&!status&&Object.values(telemetry.sessionStatus||{}).some(s=>s.pid===original.pid))continue;
     const process = String(status?.processName || original.name || '').replace(/\s/g, '');
     if (/^(Windows)?ShellExperienceHost(\.exe)?$/i.test(process)) continue;
     const auxiliary = /^(LineCall|LineMediaPlayer)(\.exe)?$/i.test(process);
@@ -90,14 +92,17 @@ function fssSessionFallback(telemetry,now=Date.now()) {
   if (!telemetry || !Number.isFinite(telemetry.timestamp) || now-telemetry.timestamp>5000) return [];
   return Object.values(telemetry.sessionStatus || {}).filter(session=>session.alive!==false && session.state!==2);
 }
+const fssSystemRows=new Map();
 async function oy() {
   const [list,telemetry,orders] = await Promise.all([
     fssOriginalSessions().catch(()=>null),fssReadSessionTelemetry().catch(()=>null),fssLoadOrders().catch(()=>fssOrders.value)
   ]);
   const rows=[...(list || fssSessionFallback(telemetry))];
   if(telemetry&&Date.now()-telemetry.timestamp<5000)for(const [deviceId,sound]of Object.entries(telemetry.systemSounds||{}))if(!rows.some(row=>row.pid===0&&row.deviceId===deviceId))rows.push({...sound,pid:0,deviceId});
+  for(const row of rows)if(row.pid===0)fssSystemRows.set(row.deviceId,row);
+  for(const row of fssSystemRows.values())if(!rows.some(s=>s.pid===0&&s.deviceId===row.deviceId))rows.push(row);
   const sessions=fssNormalizeSessions(rows,telemetry)
-    .filter(session=>session.pid===0 || !fssOrders.ignored[fssAppIdentity(session)]);
+    .filter(session=>!fssOrders.ignored[fssAppIdentity(session)]);
   return fssSortSessions(sessions,orders,fssOrders.pinned);
 }
 function fssClearDropMark() {

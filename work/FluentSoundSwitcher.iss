@@ -1,8 +1,8 @@
 ﻿[Setup]
 AppId=FluentSoundSwitcher.Custom
 AppName=Fluent Sound Switcher
-AppVersion=2026.11.16.3
-AppVerName=Fluent Sound Switcher 2026.11.16.3
+AppVersion=2026.11.16.6
+AppVerName=Fluent Sound Switcher 2026.11.16.6
 DefaultDirName={code:ExistingInstallDir}
 UsePreviousAppDir=no
 DefaultGroupName=Fluent Sound Switcher
@@ -12,7 +12,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 OutputDir=..\outputs
-OutputBaseFilename=FluentSoundSwitcher-2026.11.16.3-Setup-x64
+OutputBaseFilename=FluentSoundSwitcher-2026.11.16.6-Setup-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -156,6 +156,12 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
 var I, Root: Integer; Dir, Value: String;
 begin
+ if CurStep = ssInstall then begin
+  Dir := ExpandConstant('{userappdata}\com.fluentsoundswitcher.app\upgrade-backups\') + GetDateTimeString('yyyymmdd-hhnnss', '-', ':');
+  ForceDirectories(Dir);
+  FileCopy(ExpandConstant('{userappdata}\com.fluentsoundswitcher.app\config.json'), Dir + '\config.json', False);
+  FileCopy(ExpandConstant('{userappdata}\com.fluentsoundswitcher.app\mixer-app-order.json'), Dir + '\mixer-app-order.json', False);
+ end;
  if CurStep = ssPostInstall then
   for I := 0 to LegacyKeys.Count - 1 do begin
    Root := StrToInt(LegacyRoots[I]); Dir := '';

@@ -1,0 +1,1 @@
+module.exports=function(js){const a='const n=await e.get(ey),r=Object.fromEntries(await e.entries())';if(!js.includes(a))throw Error('Preference migration anchor missing');js=js.replace(a,'await FssRepairDevices(e).catch(console.error);'+a);return js+'\n'+require('fs').readFileSync('work/fss-device-identity.js','utf8')};

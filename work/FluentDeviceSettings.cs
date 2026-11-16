@@ -76,12 +76,13 @@ static class FluentDeviceSettings {
  static Dictionary<string,object> State(Dictionary<string,object> d,bool formats){
   string key=Key(d);bool active=S(d,"Device State")=="Active";bool? disabledFx=Boolean(Value(key+"\\FxProperties",SysFx));
   var effects=new Dictionary<string,object>();for(int i=0;i<Effects.GetLength(0);i++)effects[Effects[i,0]]=Boolean(Value(key+"\\FxProperties",Effects[i,1]));
-  var state=new Dictionary<string,object>{{"id",S(d,"Item ID")},{"name",S(d,"Name")+" ("+S(d,"Device Name")+")"},{"input",S(d,"Direction")=="Capture"},{"active",active},{"format",S(d,"Default Format")},{"exclusive",Boolean(Value(key+"\\Properties",Exclusive))},{"priority",Boolean(Value(key+"\\Properties",Priority))},{"enhancements",disabledFx.HasValue?(object)!disabledFx.Value:null},{"effects",effects},{"spatial",S(d,"Spatial Guid")}};
-  if(formats)state["formats"]=active?Formats(S(d,"Item ID"),S(d,"Default Format")):new List<string>();
+  string format=Regex.Replace(Regex.Replace(S(d,"Default Format"),@"Channels?","Channel",RegexOptions.IgnoreCase),@"bits?","bit",RegexOptions.IgnoreCase);
+  var state=new Dictionary<string,object>{{"id",S(d,"Item ID")},{"name",S(d,"Name")+" ("+S(d,"Device Name")+")"},{"input",S(d,"Direction")=="Capture"},{"active",active},{"format",format},{"exclusive",Boolean(Value(key+"\\Properties",Exclusive))},{"priority",Boolean(Value(key+"\\Properties",Priority))},{"enhancements",disabledFx.HasValue?(object)!disabledFx.Value:null},{"effects",effects},{"spatial",S(d,"Spatial Guid")}};
+  if(formats)state["formats"]=active?Formats(S(d,"Item ID"),format):new List<string>();
   return state;
  }
  static List<string> Formats(string id,string current){
-  var result=new List<string>();var match=Regex.Match(current,@"(\d+) Channel, (\d+) bit, (\d+) Hz");if(!match.Success)return result;
+  var result=new List<string>();var match=Regex.Match(current,@"(\d+) Channels?, (\d+) bits?, (\d+) Hz",RegexOptions.IgnoreCase);if(!match.Success)return result;
   int channels=int.Parse(match.Groups[1].Value);result.Add(match.Groups[2].Value+":"+match.Groups[3].Value);
   IDevices en=null;IDevice dev=null;object obj=null;
   try{en=(IDevices)new MMEnumerator();Marshal.ThrowExceptionForHR(en.GetDevice(id,out dev));Guid iid=typeof(IInputAudioClient).GUID;Marshal.ThrowExceptionForHR(dev.Activate(ref iid,23,IntPtr.Zero,out obj));var client=(IInputAudioClient)obj;

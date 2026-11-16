@@ -20,6 +20,7 @@ js=require('./patch-preserve-layout.cjs')(js);
 js=require('./patch-tray-menu.cjs')(js);
 js=require('./patch-system-sounds.cjs')(js);
 js=require('./patch-session-order.cjs')(js);
+js=require('./patch-device-identity.cjs')(js);
 js=require('./patch-system-theme.cjs')(js);
 js=require('./patch-glass-option.cjs')(js);
 js=require('./patch-settings-design.cjs')(js);
