@@ -10,16 +10,16 @@ using System.Threading;
 using System.Web.Script.Serialization;
 
 static class FluentReleaseCheck {
- public const string CurrentVersion="2026.11.16.7";
+ public const string CurrentVersion="2026.11.16.8";
  const string Repo="https://github.com/aunight/fluent-sound-switcher-aunight/releases/";
  static readonly string Dir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"com.fluentsoundswitcher.app");
- static long next;static int busy;static Dictionary<string,object> state;
+ static string notifiedTag;static long next;static int busy;static Dictionary<string,object> state;
  static string Text(Dictionary<string,object> data,string key){object value;return data.TryGetValue(key,out value)?Convert.ToString(value):"";}
  public static bool Newer(string candidate,string current){
   MatchCollection a=Regex.Matches(candidate??"",@"\d+"),b=Regex.Matches(current??"",@"\d+");if(a.Count==0)return false;
   for(int i=0;i<Math.Max(a.Count,b.Count);i++){int x=0,y=0;if(i<a.Count&&!int.TryParse(a[i].Value,out x))return false;if(i<b.Count&&!int.TryParse(b[i].Value,out y))return false;if(x!=y)return x>y;}return false;
  }
- public static void Poll(){long now=DateTime.UtcNow.Ticks;if(now<Interlocked.Read(ref next))return;Interlocked.Exchange(ref next,now+TimeSpan.FromHours(6).Ticks);Start(false,true);}
+ public static void Poll(){long now=DateTime.UtcNow.Ticks;if(now<Interlocked.Read(ref next))return;Interlocked.Exchange(ref next,now+TimeSpan.FromMinutes(15).Ticks);Start(false,true);}
  public static void CheckNow(){Start(false,false);}
  public static void InstallNow(){Start(true,false);}
  public static void AutoChanged(){Start(false,true);}
@@ -36,12 +36,18 @@ static class FluentReleaseCheck {
    Dictionary<string,object> asset=null;object items;if(release.TryGetValue("assets",out items)&&items is IEnumerable)foreach(object item in (IEnumerable)items){var candidate=item as Dictionary<string,object>;if(candidate!=null&&ValidAsset(candidate)){asset=candidate;break;}}
    bool available=Newer(tag,CurrentVersion);if(Newer(CurrentVersion,tag)){string local=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"RELEASE_NOTES.md");if(File.Exists(local)){body=File.ReadAllText(local);tag="v"+CurrentVersion;}}state["version"]=tag;state["url"]=url;state["notes"]=body.Length>16000?body.Substring(0,16000)+"\n…":body;state["available"]=available;state["canInstall"]=asset!=null;state["checkedAt"]=(long)(DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds;Publish("ready");
    var prefs=Preferences();object enabled;bool auto=prefs.TryGetValue("autoUpdate",out enabled)&&Convert.ToBoolean(enabled);
+   if(available&&automatic&&!auto&&notifiedTag!=tag&&ShouldNotify(prefs,tag)){FluentGlass.ShowMain();notifiedTag=tag;}
    if(available&&(install||(automatic&&auto&&Text(prefs,"skip")!=tag))){
     if(asset==null)throw new CryptographicException("Missing verifiable installer");
     if(automatic&&!install){long now=(long)(DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds,tried=0;long.TryParse(Text(prefs,"lastAutoAt"),out tried);if(Text(prefs,"lastAutoTag")==tag&&now-tried<21600000)return;prefs["lastAutoTag"]=tag;prefs["lastAutoAt"]=now;File.WriteAllText(Path.Combine(Dir,"update-preferences.json"),new JavaScriptSerializer().Serialize(prefs));}
     Install(asset);
    }
-  }catch(Exception e){if(state==null)state=new Dictionary<string,object>{{"current",CurrentVersion}};state["errorCode"]=e is CryptographicException?"integrity":"update";state["checkedAt"]=(long)(DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds;Publish("error");}finally{Interlocked.Exchange(ref busy,0);}});
+  }catch(Exception e){Interlocked.Exchange(ref next,DateTime.UtcNow.Ticks+TimeSpan.FromMinutes(1).Ticks);if(state==null)state=new Dictionary<string,object>{{"current",CurrentVersion}};state["errorCode"]=e is CryptographicException?"integrity":"update";state["checkedAt"]=(long)(DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds;Publish("error");}finally{Interlocked.Exchange(ref busy,0);}});
+ }
+ public static bool ShouldNotify(Dictionary<string,object> prefs,string tag){
+  if(Text(prefs,"skip")==tag)return false;
+  long remindAfter;long.TryParse(Text(prefs,"remindAfter"),out remindAfter);
+  return Text(prefs,"remindVersion")!=tag||(long)(DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds>=remindAfter;
  }
  static HttpWebRequest Request(string url){var request=(HttpWebRequest)WebRequest.Create(url);request.UserAgent="FluentSoundSwitcher-AuNight/"+CurrentVersion;request.Timeout=10000;request.ReadWriteTimeout=20000;return request;}
  public static bool ValidAsset(Dictionary<string,object> asset){return Regex.IsMatch(Text(asset,"name"),@"^FluentSoundSwitcher-[0-9A-Za-z.\-]+-Setup-x64\.exe$")&&Text(asset,"browser_download_url").StartsWith(Repo+"download/",StringComparison.Ordinal)&&Regex.IsMatch(Text(asset,"digest"),@"^sha256:[0-9a-fA-F]{64}$");}

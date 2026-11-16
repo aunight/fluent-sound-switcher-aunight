@@ -1,3 +1,21 @@
+2026.11.16.8
+
+繁體中文
+
+1. 背景更新提醒
+修正找到新版後未喚起隱藏主視窗的問題；提醒不再只依賴網頁計時器。執行於系統匣時也會開啟更新日誌視窗。
+
+2. 檢查與稍後提醒
+背景檢查改為每 15 分鐘，連線失敗後一分鐘重試。「稍後提醒」只針對當時版本，不再壓住之後發布的新版本。
+
+English
+
+1. Background update notices
+Wake the hidden main window when a new release is found, instead of relying solely on web timers. Release notes can appear while the app runs in the system tray.
+
+2. Checks and deferred notices
+Check every 15 minutes and retry connection failures after one minute. Deferring one release no longer suppresses notices for newer versions.
+
 2026.11.16.7
 
 繁體中文
