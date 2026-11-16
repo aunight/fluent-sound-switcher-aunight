@@ -66,6 +66,7 @@ static class FluentDeviceSettings {
  static Dictionary<string,object> Find(string id){if(!Endpoint.IsMatch(id))throw new ArgumentException("Invalid audio endpoint.");var d=Devices().Find(v=>S(v,"Item ID")==id);if(d==null)throw new InvalidOperationException("The audio device is no longer available.");return d;}
  static string Key(Dictionary<string,object> d){string id=S(d,"Item ID");return @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\"+(id.StartsWith("{0.0.1.")?"Capture":"Render")+"\\"+id.Substring(id.LastIndexOf('{'));}
  static object Value(string key,string prop){using(var hive=RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,RegistryView.Registry64))using(var k=hive.OpenSubKey(key)){return k==null?null:k.GetValue(prop);}}
+ static bool? ExclusiveState(object value){return value==null?(bool?)true:Boolean(value);}
  static bool? Boolean(object value){if(value==null)return null;byte[] b=value as byte[];if(b!=null){if(b.Length<12)return null;int type=BitConverter.ToUInt16(b,0);if(type!=11&&type!=3&&type!=19)return null;return BitConverter.ToInt32(b,8)!=0;}if(value is int)return (int)value!=0;return null;}
  static void SetEnhancements(string id,bool enabled){
   object policy=Activator.CreateInstance(Type.GetTypeFromCLSID(new Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")));
@@ -77,7 +78,7 @@ static class FluentDeviceSettings {
   string key=Key(d);bool active=S(d,"Device State")=="Active";bool? disabledFx=Boolean(Value(key+"\\FxProperties",SysFx));
   var effects=new Dictionary<string,object>();for(int i=0;i<Effects.GetLength(0);i++)effects[Effects[i,0]]=Boolean(Value(key+"\\FxProperties",Effects[i,1]));
   string format=Regex.Replace(Regex.Replace(S(d,"Default Format"),@"Channels?","Channel",RegexOptions.IgnoreCase),@"bits?","bit",RegexOptions.IgnoreCase);
-  var state=new Dictionary<string,object>{{"id",S(d,"Item ID")},{"name",S(d,"Name")+" ("+S(d,"Device Name")+")"},{"input",S(d,"Direction")=="Capture"},{"active",active},{"format",format},{"exclusive",Boolean(Value(key+"\\Properties",Exclusive))},{"priority",Boolean(Value(key+"\\Properties",Priority))},{"enhancements",disabledFx.HasValue?(object)!disabledFx.Value:null},{"effects",effects},{"spatial",S(d,"Spatial Guid")}};
+  var state=new Dictionary<string,object>{{"id",S(d,"Item ID")},{"name",S(d,"Name")+" ("+S(d,"Device Name")+")"},{"input",S(d,"Direction")=="Capture"},{"active",active},{"format",format},{"exclusive",ExclusiveState(Value(key+"\\Properties",Exclusive))},{"priority",ExclusiveState(Value(key+"\\Properties",Priority))},{"enhancements",disabledFx.HasValue?(object)!disabledFx.Value:null},{"effects",effects},{"spatial",S(d,"Spatial Guid")}};
   if(formats)state["formats"]=active?Formats(S(d,"Item ID"),format):new List<string>();
   return state;
  }

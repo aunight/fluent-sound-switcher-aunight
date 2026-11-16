@@ -1,3 +1,15 @@
+2026.11.16.7
+
+繁體中文
+
+1. 獨佔設定首次讀取
+裝置未明寫獨佔選項時，依 Windows 預設值顯示；已明確設定的開啟／關閉仍照實讀取，不需先切換一次開關。
+
+English
+
+1. Initial exclusive-mode settings
+Show Windows defaults when exclusive-mode options have not been explicitly stored. Preserve explicit on/off values without requiring a toggle first.
+
 2026.11.16.6
 
 繁體中文
