@@ -5,3 +5,9 @@
   var(--fss-sheet)!important;
 }
 :root[data-window=main][data-fss-glass=win7] #root>.fui-FluentProvider{background-image:linear-gradient(130deg,transparent 10%,rgba(255,255,255,.18) 22%,transparent 25%,rgba(255,255,255,.08) 60%,transparent 64%)!important}
+/* Accent tint is independent of the Win7 glass texture. */
+:root[data-fss-glass=win7][data-fss-glass-color=accent] .fui-FluentProvider{--fss-sheet:linear-gradient(rgba(0,0,0,.227),rgba(0,0,0,.227)),color-mix(in srgb,var(--fss-accent,#0078d4) 30%,transparent);--fss-ink:#fff;--fss-line:rgba(255,255,255,.25);--fss-track:rgba(255,255,255,.3)}
+:root[data-window=main][data-fss-glass=win7][data-fss-glass-color=accent] #root>.fui-FluentProvider{background:linear-gradient(130deg,transparent 10%,rgba(255,255,255,.18) 22%,transparent 25%,rgba(255,255,255,.08) 60%,transparent 64%),var(--fss-sheet)!important;color:#fff!important}
+:root[data-window=main][data-fss-glass=win7][data-fss-glass-color=accent] main section{background:transparent!important;color:#fff}
+:root[data-window][data-fss-glass=win7] :is([role=tooltip],[data-app-preview]){background:linear-gradient(130deg,rgba(255,255,255,.14),transparent 45%),var(--fss-sheet)!important;backdrop-filter:blur(22px) saturate(150%);border:1px solid var(--fss-line)!important;color:var(--fss-ink)!important;box-shadow:0 4px 16px #0004,inset 0 1px 0 #ffffff24}
+:root[data-window][data-fss-glass=win7] :is([role=tooltip],[data-app-preview]) *{color:var(--fss-ink)!important}

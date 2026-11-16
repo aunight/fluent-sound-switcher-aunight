@@ -147,10 +147,6 @@
 :root:is([data-window=main],[data-window=flyout]) [data-app-pid]>button:first-child:is(:hover,:active,:focus-visible){background:transparent!important;box-shadow:none!important;outline:none!important}
 
 /* App icon/name hover card, including its drag preview: dark amber glass. */
-:root:is([data-window=main],[data-window=flyout]) [data-app-preview],
-:root[data-window=main][data-fss-theme=dark] [data-app-preview]{background:linear-gradient(145deg,rgba(185,125,8,.88),rgba(92,58,2,.94))!important;backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border:1px solid rgba(255,214,113,.44)!important;border-radius:10px!important;box-shadow:inset 0 1px 0 rgba(255,235,179,.26),0 6px 20px rgba(40,24,0,.32)!important;color:#fff4d9!important}
-:root:is([data-window=main],[data-window=flyout]) [data-app-preview] *,
-:root[data-window=main][data-fss-theme=dark] [data-app-preview] *{color:#fff4d9!important;text-shadow:0 1px 2px rgba(45,25,0,.5)!important}
 @media(prefers-reduced-motion:reduce){.fss-volume-slider::-webkit-slider-thumb{transition:none}}
 :root[data-window=flyout],:root[data-window=flyout] body{overflow:hidden!important}
 
@@ -205,3 +201,10 @@
 .fss-panel-settings{position:static;flex-shrink:0;margin-left:auto;box-sizing:border-box}.fss-flyout-glass[data-mode=audio] section~section .fss-panel-settings{display:none}
 :root[data-window=main] .fss-volume-control:is([data-input-device],[data-output-device]) .fss-volume-track{margin-right:9px}
 .fss-flyout-glass [class]:has(>.fss-panel-settings){display:flex;align-items:center}
+:root[data-window=main] [data-device-order-id]:has([aria-current=true]){background:color-mix(in srgb,var(--fss-ink) 6%,transparent)}
+:root[data-window=main] [data-device-order-id] div:has(>div>button[aria-current=true]){background:transparent!important}
+
+:root[data-window=main] [data-device-order-id]{margin:2px 4px;border-radius:4px;transition:background-color 120ms ease}
+
+:root[data-window=main] [data-device-order-id]:hover{background:color-mix(in srgb,var(--fss-ink) 9%,transparent)}
+:root[data-window=main][data-fss-theme] main section{box-shadow:none!important;background:transparent!important}

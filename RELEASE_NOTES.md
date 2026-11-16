@@ -1,3 +1,27 @@
+2026.11.17.1
+
+繁體中文
+
+1. 主色玻璃
+外觀設定新增主色玻璃選項，使用目前主色為 Win7 玻璃染色，保留透明反光紋理。選項會儲存並同步套用至主視窗與快速面板；關閉後可回到系統底色。
+
+2. 玻璃提示底
+懸停提示與應用程式名稱預覽採用玻璃底，並跟隨主色玻璃設定；修正快速面板染色誤用預設藍色的問題。
+
+3. 主畫面清單設計
+選中列改為 4px 小圓角、淡中性色底與左側主色指示線，移除長膠囊與重複外框。輸出／輸入標題維持純文字，避免重複圖示，並保留音量、收藏與啟用按鈕。
+
+English
+
+1. Accent-colored glass
+Add an appearance option to tint Win7 glass with the current accent color while preserving its reflective texture. Save and synchronize the setting across the main window and quick panel; switching it off restores the system surface.
+
+2. Glass hover surfaces
+Use glass backgrounds for tooltips and application-name previews, following the accent-glass setting. Fix the quick panel incorrectly falling back to blue for its tint.
+
+3. Main-window device lists
+Use 4px rounded selection rows with a subtle neutral fill and a leading accent indicator. Remove elongated capsules and redundant outer frames. Keep input/output headings text-only to avoid repeated icons, while retaining volume, favorite and enable controls.
+
 2026.11.16.8
 
 繁體中文
