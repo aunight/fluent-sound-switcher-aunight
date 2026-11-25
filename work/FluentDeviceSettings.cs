@@ -24,29 +24,53 @@ static class FluentDeviceSettings {
  static readonly Regex Endpoint=new Regex(@"^\{0\.0\.[01]\.00000000\}\.\{[0-9a-fA-F-]{36}\}$");
  const string Exclusive="{b3f8fa53-0004-438e-9003-51a46e139bfc},3",Priority="{b3f8fa53-0004-438e-9003-51a46e139bfc},4",SysFx="{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5";
  const string Sonic="{b53d940c-b846-4831-9f76-d102b9b725a0}";
- static string last="";static int busy;
+ static string last="";static int busy,pendingPoll;
  static readonly string[,] Effects={
   {"loudness","{e0a941a0-88a2-4df5-8d6b-dd20bb06e8fb},4"},
   {"headphone","{e0a941a0-88a2-4df5-8d6b-dd20bb06e8fb},3"},
   {"surround","{e0a941a0-88a2-4df5-8d6b-dd20bb06e8fb},2"},
   {"voice","{4b361010-def7-43a1-a5dc-071d955b62f7},3"}};
  public static void Poll(){
+  Interlocked.Exchange(ref pendingPoll,1);
   if(Interlocked.CompareExchange(ref busy,1,0)!=0)return;
   ThreadPool.QueueUserWorkItem(delegate{
-   string token="";
    try{
-    if(!File.Exists(Request))return;
-    var req=Json.Deserialize<Dictionary<string,object>>(File.ReadAllText(Request));
-    token=S(req,"requestId");if(token==""||token==last)return;
-    // Consume before execution: a saved request must never replay on a helper restart.
-    double sent; if(!double.TryParse(S(req,"timestamp"),out sent)||Math.Abs((DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds-sent)>30000)return;
-    last=token;File.Delete(Request);
-    object result=Execute(req);Write(new {requestId=token,ok=true,data=result});
-   }catch(Exception e){if(token!="")Write(new {requestId=token,ok=false,error=e.Message});}
-   finally{Interlocked.Exchange(ref busy,0);}
+    while(Interlocked.Exchange(ref pendingPoll,0)!=0){
+     string token="";
+     try{
+      if(!File.Exists(Request))continue;
+      string raw=ReadShared(Request);
+      if(string.IsNullOrEmpty(raw))continue;
+      var req=Json.Deserialize<Dictionary<string,object>>(raw);
+      if(req==null)continue;
+      token=S(req,"requestId");if(token==""||token==last)continue;
+      // Consume before execution: a saved request must never replay on a helper restart.
+      double sent; if(!double.TryParse(S(req,"timestamp"),out sent)||Math.Abs((DateTime.UtcNow-new DateTime(1970,1,1)).TotalMilliseconds-sent)>30000)continue;
+      last=token;try{File.Delete(Request);}catch{}
+      object result=Execute(req);Write(new {requestId=token,ok=true,data=result});
+     }catch(Exception e){if(token!="")Write(new {requestId=token,ok=false,error=e.Message});}
+    }
+   }finally{
+    Interlocked.Exchange(ref busy,0);
+    if(Interlocked.CompareExchange(ref pendingPoll,0,0)!=0)Poll();
+   }
   });
  }
- static void Write(object result){try{string temp=Response+".tmp";File.WriteAllText(temp,Json.Serialize(result),new UTF8Encoding(false));if(File.Exists(Response))File.Replace(temp,Response,null);else File.Move(temp,Response);}catch{}}
+ static string ReadShared(string path){
+  for(int i=0;i<5;i++){
+   try{using(var fs=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete))using(var sr=new StreamReader(fs,Encoding.UTF8))return sr.ReadToEnd();}
+   catch(FileNotFoundException){return null;}
+   catch{Thread.Sleep(10);}
+  }
+  return File.ReadAllText(path);
+ }
+ static void Write(object result){
+  string json=Json.Serialize(result),temp=Response+".tmp";
+  for(int i=0;i<5;i++){
+   try{File.WriteAllText(temp,json,new UTF8Encoding(false));if(File.Exists(Response))File.Replace(temp,Response,null);else File.Move(temp,Response);return;}
+   catch{Thread.Sleep(10);}
+  }
+ }
  static string S(Dictionary<string,object> o,string k){object v;return o.TryGetValue(k,out v)?Convert.ToString(v):"";}
  static string Quote(string s){if(s.IndexOf('"')>=0||s.IndexOf('\r')>=0||s.IndexOf('\n')>=0)throw new ArgumentException("Invalid argument");return "\""+s+"\"";}
  static void Run(string args){
@@ -64,15 +88,22 @@ static class FluentDeviceSettings {
   }finally{if(File.Exists(file))File.Delete(file);}
  }
  static Dictionary<string,object> Find(string id){if(!Endpoint.IsMatch(id))throw new ArgumentException("Invalid audio endpoint.");var d=Devices().Find(v=>S(v,"Item ID")==id);if(d==null)throw new InvalidOperationException("The audio device is no longer available.");return d;}
- static string Key(Dictionary<string,object> d){string id=S(d,"Item ID");return @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\"+(id.StartsWith("{0.0.1.")?"Capture":"Render")+"\\"+id.Substring(id.LastIndexOf('{'));}
+ static string KeyFromId(string id){return @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\"+(id.StartsWith("{0.0.1.")?"Capture":"Render")+"\\"+id.Substring(id.LastIndexOf('{'));}
+ static string Key(Dictionary<string,object> d){return KeyFromId(S(d,"Item ID"));}
  static object Value(string key,string prop){using(var hive=RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,RegistryView.Registry64))using(var k=hive.OpenSubKey(key)){return k==null?null:k.GetValue(prop);}}
  static bool? ExclusiveState(object value){return value==null?(bool?)true:Boolean(value);}
- static bool? Boolean(object value){if(value==null)return null;byte[] b=value as byte[];if(b!=null){if(b.Length<12)return null;int type=BitConverter.ToUInt16(b,0);if(type!=11&&type!=3&&type!=19)return null;return BitConverter.ToInt32(b,8)!=0;}if(value is int)return (int)value!=0;return null;}
- static void SetEnhancements(string id,bool enabled){
+ static bool? Boolean(object value){if(value==null)return null;byte[] b=value as byte[];if(b!=null){if(b.Length<10)return null;int type=BitConverter.ToUInt16(b,0);if(type==11)return BitConverter.ToInt16(b,8)!=0;if((type==3||type==19)&&b.Length>=12)return BitConverter.ToInt32(b,8)!=0;return null;}if(value is int)return (int)value!=0;return null;}
+ static void SetEndpointBoolProperty(string id,Guid fmtid,int pid,bool fxStore,int val){
   object policy=Activator.CreateInstance(Type.GetTypeFromCLSID(new Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")));
   IntPtr key=Marshal.AllocCoTaskMem(20),value=Marshal.AllocCoTaskMem(24);
-  try{Marshal.Copy(new byte[24],0,value,24);Marshal.Copy(new Guid("1da5d803-d492-4edd-8c23-e0c0ffee7f0e").ToByteArray(),0,key,16);Marshal.WriteInt32(key,16,5);Marshal.WriteInt16(value,19);Marshal.WriteInt32(value,8,enabled?0:1);Marshal.ThrowExceptionForHR(((IDevicePolicyProperties)policy).SetPropertyValue(id,true,key,value));}
+  try{Marshal.Copy(new byte[24],0,value,24);Marshal.Copy(fmtid.ToByteArray(),0,key,16);Marshal.WriteInt32(key,16,pid);Marshal.WriteInt16(value,19);Marshal.WriteInt32(value,8,val);Marshal.ThrowExceptionForHR(((IDevicePolicyProperties)policy).SetPropertyValue(id,fxStore,key,value));}
   finally{Marshal.FreeCoTaskMem(key);Marshal.FreeCoTaskMem(value);Marshal.ReleaseComObject(policy);}
+ }
+ static void SetEnhancements(string id,bool enabled){SetEndpointBoolProperty(id,new Guid("1da5d803-d492-4edd-8c23-e0c0ffee7f0e"),5,true,enabled?0:1);}
+ static bool IsActiveEndpoint(string id){
+  IDevices en=null;IDevice dev=null;
+  try{en=(IDevices)new MMEnumerator();Marshal.ThrowExceptionForHR(en.GetDevice(id,out dev));uint state;Marshal.ThrowExceptionForHR(dev.GetState(out state));return state==1;}
+  finally{if(dev!=null)Marshal.ReleaseComObject(dev);if(en!=null)Marshal.ReleaseComObject(en);}
  }
  static Dictionary<string,object> State(Dictionary<string,object> d,bool formats){
   string key=Key(d);bool active=S(d,"Device State")=="Active";bool? disabledFx=Boolean(Value(key+"\\FxProperties",SysFx));
@@ -103,7 +134,19 @@ static class FluentDeviceSettings {
  }
  public static object Execute(Dictionary<string,object> req){
   string cmd=S(req,"command");if(cmd=="mini")return FluentAsioInfo.MiniSettings(S(req,"value"));if(cmd=="asio")return FluentAsioInfo.ReadIsolated();if(cmd=="asio-panel"){FluentAsioInfo.LaunchPanel(S(req,"value"));return true;}if(cmd=="list"){var result=new List<object>();foreach(var d in Devices())result.Add(State(d,false));return result;}
-  string id=S(req,"deviceId");var device=Find(id);if(cmd=="read")return State(device,true);
+  string id=S(req,"deviceId");
+  if(cmd=="exclusive"||cmd=="priority"){
+   if(!Endpoint.IsMatch(id))throw new ArgumentException("Invalid audio endpoint.");
+   if(!IsActiveEndpoint(id))throw new InvalidOperationException("Enable and connect this device first.");
+   string v=S(req,"value");if(v!="0"&&v!="1")throw new ArgumentException("Invalid switch value.");
+   SetEndpointBoolProperty(id,new Guid("b3f8fa53-0004-438e-9003-51a46e139bfc"),cmd=="exclusive"?3:4,false,v=="1"?1:0);
+   string regKey=KeyFromId(id)+"\\Properties";
+   bool? excl=ExclusiveState(Value(regKey,Exclusive)),prio=ExclusiveState(Value(regKey,Priority));
+   bool? target=cmd=="exclusive"?excl:prio;
+   if(target==null||target.Value!=(v=="1"))throw new InvalidOperationException("Windows did not apply this setting. The driver may not support it or the device is in use. Refresh to see the current state.");
+   return new Dictionary<string,object>{{"id",id},{"active",true},{"exclusive",excl},{"priority",prio}};
+  }
+  var device=Find(id);if(cmd=="read")return State(device,true);
   if(S(device,"Device State")!="Active")throw new InvalidOperationException("Enable and connect this device first.");
   string val=S(req,"value"),expected=val,field=cmd;var before=State(device,true);
   if(cmd=="format"){

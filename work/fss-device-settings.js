@@ -12,21 +12,41 @@ function FssDeviceSettings({direction}){
   const requestId=crypto.randomUUID(),store=await Mc.load('device-settings-request.json',{autoSave:false});
   for(const [k,v] of Object.entries({requestId,timestamp:Date.now(),command,deviceId,value}))await store.set(k,v);await store.save();
   const response=await Mc.load('device-settings-response.json',{autoSave:false});
-  for(let i=0;i<100;i++){await new Promise(r=>setTimeout(r,200));await response.reload();if(await response.get('requestId')===requestId){if(!await response.get('ok'))throw Error(await response.get('error'));return await response.get('data')}}
+  for(let i=0;i<150;i++){await new Promise(r=>setTimeout(r,i<25?20:100));await response.reload();if(await response.get('requestId')===requestId){if(!await response.get('ok'))throw Error(await response.get('error'));return await response.get('data')}}
   throw Error(t('音訊設定服務沒有回應，請重新整理。','Audio configuration timed out. Please refresh.'));
  }
  async function load(next){if(pending.current)return;let deviceList=devices;pending.current=true;setBusy(true);setMessage('');try{
   if(!next){const list=(await request('list')).filter(d=>d.input===(direction==='input'));if(!live.current)return;deviceList=list;setDevices(list);next=list.find(d=>d.id===id)?.id||list.find(d=>d.active)?.id||list[0]?.id||'';}
   setId(next);if(next){const state=await request('read',next);fssDeviceCache[direction]={devices:deviceList,id:next,data:state};if(live.current)setData(state)}else{setData(null);fssDeviceCache[direction]={devices:deviceList,id:'',data:null}}
  }catch(e){if(live.current)setMessage(String(e.message))}finally{pending.current=false;if(live.current)setBusy(false)}}
- async function change(command,value){if(pending.current)return;pending.current=true;setBusy(true);setMessage('');try{const state=await request(command,id,value);if(fssDeviceCache[direction])fssDeviceCache[direction].data=state;if(live.current){setData(state);setMessage(t('已套用並確認 Windows 設定。','Applied and verified with Windows.'))}}catch(e){if(live.current)setMessage(String(e.message));try{const state=await request('read',id);if(live.current)setData(state)}catch{}}finally{pending.current=false;if(live.current)setBusy(false)}}
+ async function change(command,value){
+  const prev=data,targetId=id;
+  if(!targetId)return;
+  if(command==='exclusive'||command==='priority'){
+   const nextBool=value==='1';
+   const optimistic={...prev,[command]:nextBool};
+   if(fssDeviceCache[direction])fssDeviceCache[direction].data=optimistic;
+   if(live.current){setData(optimistic);setMessage('')}
+   try{
+    const state=await request(command,targetId,value);
+    const merged={...optimistic,...state};
+    if(fssDeviceCache[direction]&&fssDeviceCache[direction].id===targetId)fssDeviceCache[direction].data=merged;
+    if(live.current)setData(merged);
+   }catch(e){
+    if(fssDeviceCache[direction]&&fssDeviceCache[direction].id===targetId)fssDeviceCache[direction].data=prev;
+    if(live.current){setData(prev);setMessage(String(e.message))}
+   }
+   return;
+  }
+  if(pending.current)return;pending.current=true;setBusy(true);setMessage('');try{const state=await request(command,targetId,value);if(fssDeviceCache[direction])fssDeviceCache[direction].data=state;if(live.current){setData(state);setMessage(t('已套用並確認 Windows 設定。','Applied and verified with Windows.'))}}catch(e){if(live.current)setMessage(String(e.message));try{const state=await request('read',targetId);if(live.current)setData(state)}catch{}}finally{pending.current=false;if(live.current)setBusy(false)}
+ }
  x.useEffect(()=>{live.current=true;if(!fssDeviceCache[direction])load();return()=>{live.current=false}},[]);
  Vt('device-changed',()=>{fssDeviceCache={};load()});
- async function loadAsio(refresh=false){if(pending.current)return;pending.current=true;setBusy(true);try{
+ async function loadAsio(refresh=false){try{
   if(refresh)fssMiniCache=null;
   if(!fssAsioRequest)fssAsioRequest=(refresh||!fssAsioCache?request('asio'):Promise.resolve(fssAsioCache)).then(result=>fssAsioCache=result).finally(()=>{fssAsioRequest=null});
   const result=await fssAsioRequest;if(!live.current)return;setAsio(result);setDriver(fssAsioDriver&&result.installed.includes(fssAsioDriver)?fssAsioDriver:result.apps.find(a=>a.current)?.current||result.installed[0]||'');
- }catch{if(live.current)setAsio({installed:[],apps:[]})}finally{pending.current=false;if(live.current)setBusy(false)}}
+ }catch{if(live.current)setAsio({installed:[],apps:[]})}}
  async function openPanel(){setMessage('');try{await request('asio-panel','',driver)}catch{setMessage(t('驅動面板開啟失敗。','Driver panel failed.'))}}
  async function miniChange(value=''){if(value&&busy)return;setBusy(true);try{
   if(value){fssMiniCache=await request('mini','',value)}else{if(!fssMiniRequest)fssMiniRequest=(fssMiniCache?Promise.resolve(fssMiniCache):request('mini')).then(result=>fssMiniCache=result).finally(()=>{fssMiniRequest=null});await fssMiniRequest}

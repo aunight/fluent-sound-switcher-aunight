@@ -1,3 +1,15 @@
+2026.11.25.1
+
+繁體中文
+
+1. 獨佔模式切換與原生一致性
+改用原生 `IDevicePolicyProperties` COM 介面直接套用並驗證獨佔模式設定，並加入 `device-settings-request.json` 檔案監聽與安全重試讀取，移除切換時的延遲卡頓與偶發無反應問題；同時修正快速點擊與讀取鎖定，保留優先權開關原值並與 Windows 音效內容視窗行為一致。
+
+English
+
+1. Exclusive mode responsiveness and native parity
+Apply and verify exclusive-mode settings directly via the native `IDevicePolicyProperties` COM interface with immediate `device-settings-request.json` file watching and shared-read retries, eliminating toggle lag and dropped clicks while preserving priority state to match Windows Sound settings.
+
 2026.11.17.1
 
 繁體中文

@@ -355,6 +355,13 @@ class FluentAppMeter {
      actionWatcher.Created+=(s,e)=>onAction();
      actionWatcher.Renamed+=(s,e)=>onAction();
      actionWatcher.EnableRaisingEvents=true;
+
+     var devReqWatcher=new FileSystemWatcher(Dir,"device-settings-request.json");
+     devReqWatcher.NotifyFilter=NotifyFilters.LastWrite|NotifyFilters.Size|NotifyFilters.FileName;
+     devReqWatcher.Changed+=(s,e)=>FluentDeviceSettings.Poll();
+     devReqWatcher.Created+=(s,e)=>FluentDeviceSettings.Poll();
+     devReqWatcher.Renamed+=(s,e)=>FluentDeviceSettings.Poll();
+     devReqWatcher.EnableRaisingEvents=true;
     }catch{}
    }
    try{Refresh(false);SafeWrite(Output, Sample());}catch{}
